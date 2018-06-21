@@ -7,4 +7,5 @@
     <string name="color_five">Color five</string>
     <string name="giant_goldfish">Giant Goldfish</string>
     <string name="no_internet">No internet connection!</string>
+    <string name="no_data">No received data!</string>
 </resources>
