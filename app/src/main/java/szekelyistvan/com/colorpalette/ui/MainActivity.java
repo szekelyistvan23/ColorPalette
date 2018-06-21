@@ -95,13 +95,9 @@ public class MainActivity extends AppCompatActivity {
      * */
     private void downloadJsonData(){
 
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson));
+                .addConverterFactory(GsonConverterFactory.create());
 
         Retrofit retrofit = builder.build();
 
@@ -119,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Palette>> call, Throwable t) {
                 finish();
-                Toast.makeText(MainActivity.this, R.string.no_internet,Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, t.toString(),Toast.LENGTH_SHORT).show();
             }
         });
 
