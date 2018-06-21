@@ -29,7 +29,6 @@ import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.annotation.GlideOption;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
