@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    tools:context=".ui.MainActivity">
+
+<TextView
+    android:id="@+id/textView"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/recyclerview_s_item_height"
+    android:contentDescription="@string/color_one"
+    android:background="@color/baseOne"
+    android:text="@string/giant_goldfish"
+    android:gravity="bottom"
+    app:layout_constraintEnd_toStartOf="@+id/textView1"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintHorizontal_chainStyle="spread"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+<TextView
+    android:id="@+id/textView1"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/recyclerview_s_item_height"
+    android:contentDescription="@string/color_two"
+    android:background="@color/baseTwo"
+    app:layout_constraintEnd_toStartOf="@+id/textView2"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toEndOf="@+id/textView"
+    app:layout_constraintTop_toTopOf="parent" />
+
+<TextView
+    android:id="@+id/textView2"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/recyclerview_s_item_height"
+    android:contentDescription="@string/color_three"
+    android:background="@color/baseThree"
+    app:layout_constraintEnd_toStartOf="@+id/textView3"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toEndOf="@+id/textView1"
+    app:layout_constraintTop_toTopOf="parent" />
+
+<TextView
+    android:id="@+id/textView3"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/recyclerview_s_item_height"
+    android:contentDescription="@string/color_four"
+    android:background="@color/baseFour"
+    app:layout_constraintEnd_toStartOf="@+id/textView4"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toEndOf="@+id/textView2"
+    app:layout_constraintTop_toTopOf="parent" />
+
+<TextView
+    android:id="@+id/textView4"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/recyclerview_s_item_height"
+    android:contentDescription="@string/color_five"
+    android:background="@color/baseFive"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toEndOf="@+id/textView3"
+    app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
