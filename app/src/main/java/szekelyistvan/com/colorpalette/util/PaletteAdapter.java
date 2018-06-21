@@ -55,7 +55,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
         int textViewColor = Color.parseColor("#"+paletteList.get(position).getColors().get(0));
 
         holder.textView.setText(paletteList.get(position).getTitle());
-        holder.textView.setTextColor(getContrastColor(textViewColor));
+        holder.textView.setTextColor(ContrastColor.getContrastColor(textViewColor));
         holder.textView.setBackgroundColor(textViewColor);
         holder.textViewOne.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).getColors().get(1)));
         holder.textViewTwo.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).getColors().get(2)));
@@ -104,19 +104,5 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
 
     public interface OnItemClickListener {
         void onItemClick(Palette palette);
-    }
-
-    /**
-     * Based on:
-     * https://stackoverflow.com/a/39031835
-     * @param colorIntValue
-     * @return
-     */
-    public static int getContrastColor(int colorIntValue) {
-        int red = Color.red(colorIntValue);
-        int green = Color.green(colorIntValue);
-        int blue = Color.blue(colorIntValue);
-        double lum = (((0.299 * red) + ((0.587 * green) + (0.114 * blue))));
-        return lum > 186 ? 0xFF000000 : 0xFFFFFFFF;
     }
 }
