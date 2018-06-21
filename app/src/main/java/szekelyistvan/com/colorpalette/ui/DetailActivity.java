@@ -16,18 +16,26 @@ package szekelyistvan.com.colorpalette.ui;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.annotation.GlideOption;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
@@ -59,6 +67,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView detailTextViewFour;
     @BindView(R.id.badgeImage)
     ImageView badgeImageView;
+    @BindView(R.id.detailCardView)
+    CardView detailCardView;
 
     public static final String EMPTY_STRING = "";
     public static final String WHITE = "#FFFFFF";
@@ -80,12 +90,16 @@ public class DetailActivity extends AppCompatActivity {
 
         setBackgroundColor();
 
+        //TODO disable clicklistener on error
+        //TODO after load no internet in detail activity, crash
+
         Glide.with(this).
                 load(receivedPalette.getBadgeUrl()).
                 into(new SimpleTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         badgeImageView.setImageDrawable(resource);
+                        detailCardView.setCardElevation(2);
                     }
                 });
     }
