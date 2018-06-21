@@ -14,6 +14,7 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,7 @@ import szekelyistvan.com.colorpalette.util.PaletteAdapter;
 public class MainActivity extends AppCompatActivity {
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
+    public static final String PALETTE_OBJECT = "palette_object";
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
     RecyclerView recyclerView;
@@ -67,22 +69,16 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-//        Based on: https://antonioleiva.com/recyclerview-listener/
-//        adapter = new CakeAdapter(new ArrayList<Cake>(), new CakeAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(Cake cake) {
-//                Bundle args = new Bundle();
-//                args.putParcelable(CAKE_OBJECT, cake);
-//                Intent intent = new Intent(MainActivity.this, FragmentsActivity.class);
-//                intent.putExtras(args);
-//                startActivity(intent);
-//            }
-//        });
+        // Based on: https://antonioleiva.com/recyclerview-listener/
 
         paletteAdapter = new PaletteAdapter(new ArrayList<Palette>(), new PaletteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Palette palette) {
-
+                Bundle args = new Bundle();
+                args.putParcelable(PALETTE_OBJECT, palette);
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtras(args);
+                startActivity(intent);
             }
         });
 
