@@ -15,10 +15,21 @@ package szekelyistvan.com.colorpalette.ui;
         limitations under the License.*/
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.annotation.GlideOption;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +58,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView detailTextViewThree;
     @BindView(R.id.detailTextView4)
     TextView detailTextViewFour;
+    @BindView(R.id.badgeImage)
+    ImageView badgeImageView;
 
     public static final String EMPTY_STRING = "";
     public static final String WHITE = "#FFFFFF";
@@ -67,6 +80,15 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         setBackgroundColor();
+
+        Glide.with(this).
+                load(receivedPalette.getBadgeUrl()).
+                into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        badgeImageView.setImageDrawable(resource);
+                    }
+                });
     }
 
     private void setBackgroundColor(){
