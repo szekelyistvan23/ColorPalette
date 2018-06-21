@@ -52,16 +52,16 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
 
     @Override
     public void onBindViewHolder(@NonNull final PaletteAdapter.PaletteViewHolder holder, int position) {
-        int textViewColor = Color.parseColor("#"+paletteList.get(position).colors.get(0));
+        int textViewColor = Color.parseColor("#"+paletteList.get(position).getColors().get(0));
 
         holder.textView.setText(paletteList.get(position).getTitle());
         holder.textView.setTextColor(getContrastColor(textViewColor));
         holder.textView.setBackgroundColor(textViewColor);
-        holder.textViewOne.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).colors.get(1)));
-        holder.textViewTwo.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).colors.get(2)));
-        holder.textViewThree.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).colors.get(3)));
-        if (paletteList.get(position).colors.size() != 4) {
-            holder.textViewFour.setBackgroundColor(Color.parseColor("#" + paletteList.get(position).colors.get(4)));
+        holder.textViewOne.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).getColors().get(1)));
+        holder.textViewTwo.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).getColors().get(2)));
+        holder.textViewThree.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).getColors().get(3)));
+        if (paletteList.get(position).getColors().size() != 4) {
+            holder.textViewFour.setBackgroundColor(Color.parseColor("#" + paletteList.get(position).getColors().get(4)));
         } else {
             holder.textViewFour.setVisibility(View.INVISIBLE);
         }
