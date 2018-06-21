@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/palette_top"
+        android:title="Top"
+        android:icon="@drawable/top_button" />
+    <item android:id="@+id/palette_new"
+        android:title="New"
+        android:icon="@drawable/new_button" />
+    <item android:id="@+id/palette_favorite"
+        android:title="Favorite"
+        android:icon="@drawable/favorite_button" />
+</menu>

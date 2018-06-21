@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.List;
 
-public class ColorInfo implements Parcelable {
+public class Palette implements Parcelable {
 
     public int id;
     public String title;
@@ -167,10 +167,10 @@ public class ColorInfo implements Parcelable {
         dest.writeString(this.apiUrl);
     }
 
-    public ColorInfo() {
+    public Palette() {
     }
 
-    protected ColorInfo(Parcel in) {
+    protected Palette(Parcel in) {
         this.id = in.readInt();
         this.title = in.readString();
         this.userName = in.readString();
@@ -188,15 +188,15 @@ public class ColorInfo implements Parcelable {
         this.apiUrl = in.readString();
     }
 
-    public static final Parcelable.Creator<ColorInfo> CREATOR = new Parcelable.Creator<ColorInfo>() {
+    public static final Parcelable.Creator<Palette> CREATOR = new Parcelable.Creator<Palette>() {
         @Override
-        public ColorInfo createFromParcel(Parcel source) {
-            return new ColorInfo(source);
+        public Palette createFromParcel(Parcel source) {
+            return new Palette(source);
         }
 
         @Override
-        public ColorInfo[] newArray(int size) {
-            return new ColorInfo[size];
+        public Palette[] newArray(int size) {
+            return new Palette[size];
         }
     };
 }

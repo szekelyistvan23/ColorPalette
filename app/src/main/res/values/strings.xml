@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Color Palette</string>
+    <string name="color_one">Color one</string>
+    <string name="color_two">Color two</string>
+    <string name="color_three">Color three</string>
+    <string name="color_four">Color four</string>
+    <string name="color_five">Color five</string>
+    <string name="giant_goldfish">Giant Goldfish</string>
+    <string name="no_internet">No internet connection!</string>
 </resources>
