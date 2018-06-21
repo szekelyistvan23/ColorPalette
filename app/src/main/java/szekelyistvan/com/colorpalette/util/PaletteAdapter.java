@@ -1,6 +1,6 @@
 package szekelyistvan.com.colorpalette.util;
 
-/*Copyright 2018 Szekely Isyvan
+/*Copyright 2018 Szekely Istvan
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
 
     private List<Palette> paletteList;
     private OnItemClickListener paletteListener;
+    public static final String HASH = "#";
 
     public PaletteAdapter(List<Palette> paletteList, OnItemClickListener paletteListener) {
         this.paletteList = paletteList;
@@ -52,16 +53,16 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
 
     @Override
     public void onBindViewHolder(@NonNull final PaletteAdapter.PaletteViewHolder holder, int position) {
-        int textViewColor = Color.parseColor("#"+paletteList.get(position).getColors().get(0));
+        int textViewColor = Color.parseColor(HASH+paletteList.get(position).getColors().get(0));
 
         holder.textView.setText(paletteList.get(position).getTitle());
         holder.textView.setTextColor(ContrastColor.getContrastColor(textViewColor));
         holder.textView.setBackgroundColor(textViewColor);
-        holder.textViewOne.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).getColors().get(1)));
-        holder.textViewTwo.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).getColors().get(2)));
-        holder.textViewThree.setBackgroundColor(Color.parseColor("#"+paletteList.get(position).getColors().get(3)));
+        holder.textViewOne.setBackgroundColor(Color.parseColor(HASH+paletteList.get(position).getColors().get(1)));
+        holder.textViewTwo.setBackgroundColor(Color.parseColor(HASH+paletteList.get(position).getColors().get(2)));
+        holder.textViewThree.setBackgroundColor(Color.parseColor(HASH+paletteList.get(position).getColors().get(3)));
         if (paletteList.get(position).getColors().size() != 4) {
-            holder.textViewFour.setBackgroundColor(Color.parseColor("#" + paletteList.get(position).getColors().get(4)));
+            holder.textViewFour.setBackgroundColor(Color.parseColor(HASH + paletteList.get(position).getColors().get(4)));
         } else {
             holder.textViewFour.setVisibility(View.INVISIBLE);
         }
