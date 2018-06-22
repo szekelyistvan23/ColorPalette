@@ -8,4 +8,7 @@
     <string name="giant_goldfish">Giant Goldfish</string>
     <string name="no_internet">No internet connection!</string>
     <string name="no_data">No received data!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

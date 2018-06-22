@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 
-import static szekelyistvan.com.colorpalette.ui.DetailActivity.WHITE;
+import static szekelyistvan.com.colorpalette.ui.DetailFragment.WHITE;
 
 public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteViewHolder>{
 

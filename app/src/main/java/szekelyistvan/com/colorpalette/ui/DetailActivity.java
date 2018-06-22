@@ -14,110 +14,55 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
-
-import java.util.Arrays;
-import java.util.List;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.util.ContrastColor;
 
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_OBJECT;
-import static szekelyistvan.com.colorpalette.util.PaletteAdapter.HASH;
 
 public class DetailActivity extends AppCompatActivity {
 
     private Palette receivedPalette;
 
-    @BindView(R.id.detailTextView)
-    TextView detailTextView;
-    @BindView(R.id.detailTextView1)
-    TextView detailTextViewOne;
-    @BindView(R.id.detailTextView2)
-    TextView detailTextViewTwo;
-    @BindView(R.id.detailTextView3)
-    TextView detailTextViewThree;
-    @BindView(R.id.detailTextView4)
-    TextView detailTextViewFour;
-    @BindView(R.id.badgeImage)
-    ImageView badgeImageView;
-    @BindView(R.id.detailCardView)
-    CardView detailCardView;
+    public static final String DETAIL_FRAGMENT = "detail_fragment";
 
-    public static final String EMPTY_STRING = "";
-    public static final String WHITE = "#FFFFFF";
-    public static final int SMALLER_SIZE = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        ButterKnife.bind(this);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            receivedPalette = extras.getParcelable(PALETTE_OBJECT);
-            setTitle(receivedPalette.getTitle());
-        } else {
-            finish();
-            Toast.makeText(this, R.string.no_data, Toast.LENGTH_SHORT).show();
+        if (getIntent().hasExtra(PALETTE_OBJECT)){
+            receivedPalette = getIntent().getParcelableExtra(PALETTE_OBJECT);
         }
-
-        setBackgroundColor();
-
-        //TODO disable clicklistener on error
-        //TODO after load no internet in detail activity, crash
-
-        Glide.with(this).
-                load(receivedPalette.getBadgeUrl()).
-                into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        badgeImageView.setImageDrawable(resource);
-                        detailCardView.setCardElevation(2);
-                    }
-                });
+        if (receivedPalette != null){
+            setTitle(receivedPalette.getTitle());
+            displayDetailFragment();
+        }
     }
+    private void displayDetailFragment(){
+        ButterKnife.bind(this);
+        Bundle args = new Bundle();
+        args.putParcelable(PALETTE_OBJECT, receivedPalette);
 
-    private void setBackgroundColor(){
-        int size = receivedPalette.getColors().size();
-        List<TextView> textViews =
-                Arrays.asList(detailTextView, detailTextViewOne, detailTextViewTwo, detailTextViewThree, detailTextViewFour);
-            for (int i = 0; i < size; i++){
-                setTextViewProperties(textViews.get(i), i);
-            }
-            if (size == SMALLER_SIZE){
-                detailTextViewFour.setText(EMPTY_STRING);
-                detailTextViewFour.setBackgroundColor(Color.parseColor(WHITE));
-            }
-    }
+        DetailFragment searchDetailFragment = (DetailFragment) getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT);
 
-    private void setTextViewProperties(TextView textView, int position){
-        textView.setBackgroundColor(Color.parseColor(HASH+receivedPalette.getColors().get(position)));
-        textView.setTextColor(ContrastColor.getContrastColor(Color.parseColor(extractBackgroundColor(position))));
-        textView.setText(HASH+receivedPalette.getColors().get(position));
-    }
+        if (searchDetailFragment != null){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, searchDetailFragment, DETAIL_FRAGMENT)
+                    .commit();
+        } else {
 
-    private String extractBackgroundColor(int position){
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(HASH);
-        stringBuilder.append(receivedPalette.getColors().get(position));
+            DetailFragment detailFragment = new DetailFragment();
+            detailFragment.setArguments(args);
 
-        return  stringBuilder.toString();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container, detailFragment, DETAIL_FRAGMENT)
+                    .commit();
+        }
     }
 }
