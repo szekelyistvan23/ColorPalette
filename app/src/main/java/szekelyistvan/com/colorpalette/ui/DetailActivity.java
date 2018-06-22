@@ -16,7 +16,6 @@ package szekelyistvan.com.colorpalette.ui;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -27,18 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
-import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.annotation.GlideOption;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,7 +62,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EMPTY_STRING = "";
     public static final String WHITE = "#FFFFFF";
-    public static final int SMALLER_PATTERN = 4;
+    public static final int SMALLER_SIZE = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +101,7 @@ public class DetailActivity extends AppCompatActivity {
             for (int i = 0; i < size; i++){
                 setTextViewProperties(textViews.get(i), i);
             }
-            if (size == SMALLER_PATTERN){
+            if (size == SMALLER_SIZE){
                 detailTextViewFour.setText(EMPTY_STRING);
                 detailTextViewFour.setBackgroundColor(Color.parseColor(WHITE));
             }

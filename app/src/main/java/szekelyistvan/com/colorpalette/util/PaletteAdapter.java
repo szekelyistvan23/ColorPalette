@@ -18,6 +18,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +32,14 @@ import butterknife.ButterKnife;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 
+import static szekelyistvan.com.colorpalette.ui.DetailActivity.WHITE;
+
 public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteViewHolder>{
 
     private List<Palette> paletteList;
     private OnItemClickListener paletteListener;
     public static final String HASH = "#";
+    public static final String TAG = "ColorPalette";
 
     public PaletteAdapter(List<Palette> paletteList, OnItemClickListener paletteListener) {
         this.paletteList = paletteList;
@@ -61,10 +65,10 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
         holder.textViewOne.setBackgroundColor(Color.parseColor(HASH+paletteList.get(position).getColors().get(1)));
         holder.textViewTwo.setBackgroundColor(Color.parseColor(HASH+paletteList.get(position).getColors().get(2)));
         holder.textViewThree.setBackgroundColor(Color.parseColor(HASH+paletteList.get(position).getColors().get(3)));
-        if (paletteList.get(position).getColors().size() != 4) {
+        if (paletteList.get(position).getColors().size() > 4) {
             holder.textViewFour.setBackgroundColor(Color.parseColor(HASH + paletteList.get(position).getColors().get(4)));
         } else {
-            holder.textViewFour.setVisibility(View.INVISIBLE);
+            holder.textViewFour.setBackgroundColor(Color.parseColor(WHITE));
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
