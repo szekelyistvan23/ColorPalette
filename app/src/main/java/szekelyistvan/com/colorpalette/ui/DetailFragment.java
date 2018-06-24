@@ -1,6 +1,7 @@
 package szekelyistvan.com.colorpalette.ui;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,6 +55,8 @@ public class DetailFragment extends Fragment {
     ImageView badgeImageView;
     @BindView(R.id.detailCardView)
     CardView detailCardView;
+    @BindView(R.id.sharing_image_view)
+    ImageView sharingImageView;
     private Unbinder unbinder;
 
     public static final String EMPTY_STRING = "";
@@ -77,7 +81,6 @@ public class DetailFragment extends Fragment {
 
         setBackgroundColor();
 
-        //TODO disable clicklistener on error
         //TODO after load no internet in detail activity, crash
 
         Glide.with(this).
@@ -87,9 +90,25 @@ public class DetailFragment extends Fragment {
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         badgeImageView.setImageDrawable(resource);
                         detailCardView.setCardElevation(2);
+                        badgeImageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        });
                     }
                 });
 
+        sharingImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, sharePalette());
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, getString(R.string.share_palette)));
+            }
+        });
         return view;
     }
 
@@ -106,6 +125,20 @@ public class DetailFragment extends Fragment {
         fragment.setArguments(bundle);
 
         return fragment;
+    }
+
+    private String sharePalette(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(palette.getTitle());
+        stringBuilder.append(":");
+        int size = palette.getColors().size();
+        for (int i =0; i < size; i++){
+            stringBuilder.append(" #" + palette.getColors().get(i));
+            if (i != size -1){
+                stringBuilder.append(",");
+            }
+        }
+        return stringBuilder.toString();
     }
 
     private void setBackgroundColor(){

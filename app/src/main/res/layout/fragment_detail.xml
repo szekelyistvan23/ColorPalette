@@ -91,9 +91,31 @@
             app:cardElevation="0dp">
             <ImageView
                 android:id="@+id/badgeImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="160dp"
+                android:layout_height="80dp"
+                android:background="?android:selectableItemBackground"
                 app:srcCompat="@drawable/badge_transparent" />
         </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:id="@+id/favourite_image_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:padding="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/sharing_image_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/favorite_button"/>
+
+        <ImageView
+            android:id="@+id/sharing_image_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:padding="10dp"
+            android:background="?android:selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/share_button" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
