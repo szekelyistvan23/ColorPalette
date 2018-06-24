@@ -59,7 +59,6 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
     public void onBindViewHolder(@NonNull final PaletteAdapter.PaletteViewHolder holder, int position) {
         int textViewColor = Color.parseColor(HASH+paletteList.get(position).getColors().get(0));
 
-        holder.textView.setText(paletteList.get(position).getTitle());
         holder.textView.setTextColor(ContrastColor.getContrastColor(textViewColor));
         holder.textView.setBackgroundColor(textViewColor);
         holder.textViewOne.setBackgroundColor(Color.parseColor(HASH+paletteList.get(position).getColors().get(1)));
@@ -77,6 +76,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
                 paletteListener.onItemClick(holder.getAdapterPosition());
             }
         });
+        holder.textViewFive.setText(paletteList.get(position).getTitle());
     }
 
     @Override
@@ -95,6 +95,8 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
         TextView textViewThree;
         @BindView(R.id.textView4)
         TextView textViewFour;
+        @BindView(R.id.textView5)
+        TextView textViewFive;
 
         public PaletteViewHolder(View itemView) {
             super(itemView);
