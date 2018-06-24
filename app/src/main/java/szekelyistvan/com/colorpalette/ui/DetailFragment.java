@@ -4,6 +4,7 @@ package szekelyistvan.com.colorpalette.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -93,7 +94,9 @@ public class DetailFragment extends Fragment {
                         badgeImageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(palette.getUrl()));
+                                startActivity(intent);
                             }
                         });
                     }
