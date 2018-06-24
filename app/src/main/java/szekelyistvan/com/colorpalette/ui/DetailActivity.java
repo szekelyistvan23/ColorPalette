@@ -14,55 +14,83 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import butterknife.ButterKnife;
+
+import java.util.List;
+
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 
-import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_OBJECT;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private Palette receivedPalette;
+    private int paletteIndex;
+    private List<Palette> baseArray;
 
-    public static final String DETAIL_FRAGMENT = "detail_fragment";
 
+    PalettePagerAdapter palettePagerAdapter;
+    ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        if (getIntent().hasExtra(PALETTE_OBJECT)){
-            receivedPalette = getIntent().getParcelableExtra(PALETTE_OBJECT);
+        if (getIntent().hasExtra(PALETTE_INDEX)){
+            paletteIndex = getIntent().getIntExtra(PALETTE_INDEX, 0);
         }
-        if (receivedPalette != null){
-            setTitle(receivedPalette.getTitle());
-            displayDetailFragment();
+
+        if (getIntent().hasExtra(PALETTE_ARRAY)){
+            baseArray = getIntent().getParcelableArrayListExtra(PALETTE_ARRAY);
+        }
+
+        if (baseArray != null){
+
+            palettePagerAdapter = new PalettePagerAdapter(getSupportFragmentManager());
+
+            viewPager = findViewById(R.id.viewpager);
+            viewPager.setAdapter(palettePagerAdapter);
+
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    setTitle(baseArray.get(position).getTitle());
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                }
+            });
+
+         viewPager.setCurrentItem(paletteIndex, false);
         }
     }
-    private void displayDetailFragment(){
-        ButterKnife.bind(this);
-        Bundle args = new Bundle();
-        args.putParcelable(PALETTE_OBJECT, receivedPalette);
 
-        DetailFragment searchDetailFragment = (DetailFragment) getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT);
+    public class PalettePagerAdapter extends FragmentStatePagerAdapter {
 
-        if (searchDetailFragment != null){
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, searchDetailFragment, DETAIL_FRAGMENT)
-                    .commit();
-        } else {
+        public PalettePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-            DetailFragment detailFragment = new DetailFragment();
-            detailFragment.setArguments(args);
+        @Override
+        public Fragment getItem(int position) {
+            return DetailFragment.newInstance(baseArray.get(position));
+        }
 
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, detailFragment, DETAIL_FRAGMENT)
-                    .commit();
+        @Override
+        public int getCount() {
+            return baseArray.size();
         }
     }
 }

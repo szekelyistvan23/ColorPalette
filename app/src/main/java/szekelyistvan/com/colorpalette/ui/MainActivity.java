@@ -15,14 +15,12 @@ package szekelyistvan.com.colorpalette.ui;
         limitations under the License.*/
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +41,8 @@ import szekelyistvan.com.colorpalette.util.PaletteAdapter;
 public class MainActivity extends AppCompatActivity {
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
-    public static final String PALETTE_OBJECT = "palette_object";
+    public static final String PALETTE_INDEX = "palette_index";
+    public static final String PALETTE_ARRAY = "palette_array";
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
     RecyclerView recyclerView;
@@ -70,12 +69,12 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         // Based on: https://antonioleiva.com/recyclerview-listener/
-
         paletteAdapter = new PaletteAdapter(new ArrayList<Palette>(), new PaletteAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Palette palette) {
+            public void onItemClick(int position) {
                 Bundle args = new Bundle();
-                args.putParcelable(PALETTE_OBJECT, palette);
+                args.putInt(PALETTE_INDEX, position);
+                args.putParcelableArrayList(PALETTE_ARRAY, (ArrayList<? extends Parcelable>) palettes);
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtras(args);
                 startActivity(intent);

@@ -74,7 +74,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                paletteListener.onItemClick(paletteList.get(holder.getAdapterPosition()));
+                paletteListener.onItemClick(holder.getAdapterPosition());
             }
         });
     }
@@ -108,6 +108,6 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Palette palette);
+        void onItemClick(int position);
     }
 }

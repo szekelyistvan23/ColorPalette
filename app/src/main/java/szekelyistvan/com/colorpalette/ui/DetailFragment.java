@@ -29,7 +29,7 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.util.ContrastColor;
 
-import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_OBJECT;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.util.PaletteAdapter.HASH;
 
 /**
@@ -69,7 +69,7 @@ public class DetailFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         if (getArguments() != null) {
-            palette = getArguments().getParcelable(PALETTE_OBJECT);
+            palette = getArguments().getParcelable(PALETTE_INDEX);
         } else {
             getActivity().finish();
             Toast.makeText(getActivity(), R.string.no_data, Toast.LENGTH_SHORT).show();
@@ -97,6 +97,15 @@ public class DetailFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    public static Fragment newInstance(Palette palette){
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PALETTE_INDEX, palette);
+        Fragment fragment = new DetailFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     private void setBackgroundColor(){
