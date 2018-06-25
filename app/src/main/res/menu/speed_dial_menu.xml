@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/fab_link"
+        android:icon="@drawable/web_white"
+        android:title="Link" />
+
+    <item
+        android:id="@+id/fab_share"
+        android:icon="@drawable/share_white"
+        android:title="Share" />
+
+    <item
+        android:id="@+id/fab_favorite"
+        android:icon="@drawable/favorite_white"
+        android:title="Favorite" />
+
+</menu>

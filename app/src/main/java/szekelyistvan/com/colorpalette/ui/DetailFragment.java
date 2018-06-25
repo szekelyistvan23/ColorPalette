@@ -1,5 +1,18 @@
 package szekelyistvan.com.colorpalette.ui;
 
+/*Copyright 2018 Szekely Isyvan
+
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.*/
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +33,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.leinardi.android.speeddial.SpeedDialActionItem;
+import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -52,12 +67,8 @@ public class DetailFragment extends Fragment {
     TextView detailTextViewThree;
     @BindView(R.id.detailTextView4)
     TextView detailTextViewFour;
-    @BindView(R.id.badgeImage)
-    ImageView badgeImageView;
-    @BindView(R.id.detailCardView)
-    CardView detailCardView;
-    @BindView(R.id.sharing_image_view)
-    ImageView sharingImageView;
+    @BindView(R.id.speed_dial_view)
+    SpeedDialView speedDialView;
     private Unbinder unbinder;
 
     public static final String EMPTY_STRING = "";
@@ -84,32 +95,26 @@ public class DetailFragment extends Fragment {
 
         //TODO after load no internet in detail activity, crash
 
-        Glide.with(this).
-                load(palette.getBadgeUrl()).
-                into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        badgeImageView.setImageDrawable(resource);
-                        detailCardView.setCardElevation(2);
-                        badgeImageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(Uri.parse(palette.getUrl()));
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                });
-
-        sharingImageView.setOnClickListener(new View.OnClickListener() {
+        speedDialView.inflate(R.menu.speed_dial_menu);
+        speedDialView.setOnActionSelectedListener(new SpeedDialView.OnActionSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, sharePalette());
-                sendIntent.setType("text/plain");
-                startActivity(Intent.createChooser(sendIntent, getString(R.string.share_palette)));
+            public boolean onActionSelected(SpeedDialActionItem actionItem) {
+                switch (actionItem.getId()) {
+                    case R.id.fab_share:
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, sharePalette());
+                        sendIntent.setType("text/plain");
+                        startActivity(Intent.createChooser(sendIntent, getString(R.string.share_palette)));
+                        return false;
+                    case R.id.fab_link:
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(palette.getUrl()));
+                        startActivity(intent);
+                        return false;
+                    default:
+                        return false;
+                }
             }
         });
         return view;
@@ -121,7 +126,7 @@ public class DetailFragment extends Fragment {
         unbinder.unbind();
     }
 
-    public static Fragment newInstance(Palette palette){
+    public static Fragment newInstance(Palette palette) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(PALETTE_INDEX, palette);
         Fragment fragment = new DetailFragment();
@@ -130,44 +135,45 @@ public class DetailFragment extends Fragment {
         return fragment;
     }
 
-    private String sharePalette(){
+    private String sharePalette() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(palette.getTitle());
         stringBuilder.append(":");
         int size = palette.getColors().size();
-        for (int i =0; i < size; i++){
-            stringBuilder.append(" #" + palette.getColors().get(i));
-            if (i != size -1){
+        for (int i = 0; i < size; i++) {
+            stringBuilder.append(" #");
+            stringBuilder.append(palette.getColors().get(i));
+            if (i != size - 1) {
                 stringBuilder.append(",");
             }
         }
         return stringBuilder.toString();
     }
 
-    private void setBackgroundColor(){
+    private void setBackgroundColor() {
         int size = palette.getColors().size();
         List<TextView> textViews =
                 Arrays.asList(detailTextView, detailTextViewOne, detailTextViewTwo, detailTextViewThree, detailTextViewFour);
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             setTextViewProperties(textViews.get(i), i);
         }
-        if (size == SMALLER_SIZE){
+        if (size == SMALLER_SIZE) {
             detailTextViewFour.setText(EMPTY_STRING);
             detailTextViewFour.setBackgroundColor(Color.parseColor(WHITE));
         }
     }
 
-    private void setTextViewProperties(TextView textView, int position){
-        textView.setBackgroundColor(Color.parseColor(HASH+palette.getColors().get(position)));
+    private void setTextViewProperties(TextView textView, int position) {
+        textView.setBackgroundColor(Color.parseColor(HASH + palette.getColors().get(position)));
         textView.setTextColor(ContrastColor.getContrastColor(Color.parseColor(extractBackgroundColor(position))));
-        textView.setText(HASH+palette.getColors().get(position));
+        textView.setText(HASH + palette.getColors().get(position));
     }
 
-    private String extractBackgroundColor(int position){
+    private String extractBackgroundColor(int position) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(HASH);
         stringBuilder.append(palette.getColors().get(position));
 
-        return  stringBuilder.toString();
+        return stringBuilder.toString();
     }
 }
