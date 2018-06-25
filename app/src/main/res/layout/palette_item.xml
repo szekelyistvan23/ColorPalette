@@ -74,7 +74,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/recyclerview_s_item_height"
         android:contentDescription="@string/color_five"
-        android:background="@android:color/black"
+        android:background="#403831"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
