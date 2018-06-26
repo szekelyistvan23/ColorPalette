@@ -20,6 +20,10 @@
         </activity>
         <activity android:name=".ui.DetailActivity"
                 android:parentActivityName=".ui.MainActivity"/>
+        <provider
+            android:authorities="szekelyistvan.com.colorpalette"
+            android:name="szekelyistvan.com.colorpalette.provider.PaletteContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
