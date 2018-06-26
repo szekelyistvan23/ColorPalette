@@ -1,6 +1,6 @@
 package szekelyistvan.com.colorpalette.ui;
 
-/*Copyright 2018 Szekely Isyvan
+/*Copyright 2018 Szekely Istvan
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -110,7 +111,11 @@ public class DetailFragment extends Fragment {
                     case R.id.fab_link:
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(palette.getUrl()));
-                        startActivity(intent);
+                        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                            startActivity(intent);
+                        } else {
+                            Snackbar.make(DetailFragment.this.getView(), R.string.install_browser, Snackbar.LENGTH_SHORT).show();
+                        }
                         return false;
                     default:
                         return false;
@@ -175,5 +180,11 @@ public class DetailFragment extends Fragment {
         stringBuilder.append(palette.getColors().get(position));
 
         return stringBuilder.toString();
+    }
+
+    public void closeFab(){
+        if (speedDialView.isOpen()){
+            speedDialView.close(true);
+        }
     }
 }

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<android.support.v7.widget.CardView
+        android:id="@+id/detail_card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
     app:cardCornerRadius="4dp"
-    app:cardUseCompatPadding="true"
-    >
+    app:cardUseCompatPadding="true">
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -73,15 +77,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detailTextView3" />
 
-        <com.leinardi.android.speeddial.SpeedDialView
-            android:id="@+id/speed_dial_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:sdMainFabClosedSrc="@drawable/add_white" />
-
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/speed_dial_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_gravity="bottom|end"
+        app:sdMainFabClosedSrc="@drawable/add_white"
+        app:layout_behavior="@string/speeddial_snackbar_behavior"/>
+</android.support.design.widget.CoordinatorLayout>
