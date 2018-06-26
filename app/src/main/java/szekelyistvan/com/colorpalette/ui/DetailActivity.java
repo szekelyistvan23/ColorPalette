@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private int paletteIndex;
     private List<Palette> baseArray;
+    private DetailFragment detailFragment;
 
 
     PalettePagerAdapter palettePagerAdapter;
@@ -70,6 +72,10 @@ public class DetailActivity extends AppCompatActivity {
 
                 @Override
                 public void onPageScrollStateChanged(int state) {
+                    detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                    if (detailFragment != null && state == 1) {
+                        detailFragment.closeFab();
+                    }
                 }
             });
 
@@ -92,5 +98,24 @@ public class DetailActivity extends AppCompatActivity {
         public int getCount() {
             return baseArray.size();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+        if (detailFragment != null) {
+            detailFragment.closeFab();
+        }
+        super.onBackPressed();
     }
 }
