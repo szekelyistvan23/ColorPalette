@@ -16,12 +16,17 @@ package szekelyistvan.com.colorpalette.ui;
 
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +40,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
+import szekelyistvan.com.colorpalette.util.NewInternetClient;
 import szekelyistvan.com.colorpalette.util.TopInternetClient;
 import szekelyistvan.com.colorpalette.util.PaletteAdapter;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,24 +54,47 @@ public class MainActivity extends AppCompatActivity {
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
     RecyclerView recyclerView;
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
     PaletteAdapter paletteAdapter;
+
+    @Retention(SOURCE)
+    @StringDef({ TOP, NEW})
+    public @interface InternetClient {}
+    public static final String TOP = "top";
+    public static final String NEW = "new";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Butterknife is distributed under Apache License, Version 2.0
+        ButterKnife.bind(this);
 
         setupRecyclerView();
-        downloadJsonData();
+        downloadJsonData(TOP);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.palette_top:
+                        downloadJsonData(TOP);
+                        break;
+                    case R.id.palette_new:
+                        downloadJsonData(NEW);
+                        break;
+                    case R.id.palette_favorite:
+                }
+                return true;
+            }
+        });
     }
 
     /**
      * Sets up a RecyclerView to display the palettes.
      */
     private void setupRecyclerView(){
-        // Butterknife is distributed under Apache License, Version 2.0
-        ButterKnife.bind(this);
-
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -80,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         recyclerView.setAdapter(paletteAdapter);
     }
 
@@ -88,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
      * Gson converter. The implementation is based on:
      * https://www.youtube.com/watch?v=R4XU8yPzSx0
      * */
-    private void downloadJsonData(){
+    private void downloadJsonData(@InternetClient String client){
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -96,8 +126,18 @@ public class MainActivity extends AppCompatActivity {
 
         Retrofit retrofit = builder.build();
 
-         TopInternetClient internetClient= retrofit.create(TopInternetClient.class);
-        Call<List<Palette>> call = internetClient.topPalettesData();
+        TopInternetClient topInternetClient= retrofit.create(TopInternetClient.class);
+        NewInternetClient newInternetClient= retrofit.create(NewInternetClient.class);
+        Call<List<Palette>> call = null;
+
+        switch(client){
+            case TOP:
+                call = topInternetClient.topPalettesData();
+                break;
+            case NEW:
+                call = newInternetClient.newPalettesData();
+                break;
+        }
 
         call.enqueue(new Callback<List<Palette>>() {
             @Override
