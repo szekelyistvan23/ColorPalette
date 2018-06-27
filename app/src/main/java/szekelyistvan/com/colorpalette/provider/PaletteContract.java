@@ -7,12 +7,8 @@ public class PaletteContract {
 
     public static final String AUTHORITY = "szekelyistvan.com.colorpalette";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-    public static final String PATH_PALETTES = "palettes";
 
     public static final class PaletteEntry implements BaseColumns {
-
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_PALETTES).build();
 
         public static final String DB_NAME = "palettes.db";
         public static final int DB_VERSION = 1;
@@ -53,5 +49,12 @@ public class PaletteContract {
                 + PALETTES_COLUMN_COLOR_THREE + " TEXT, "
                 + PALETTES_COLUMN_COLOR_FOUR + " TEXT, "
                 + PALETTES_COLUMN_COLOR_FIVE + " TEXT);";
+
+        public static final Uri CONTENT_URI_TOP =
+                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME_TOP).build();
+        public static final Uri CONTENT_URI_NEW =
+                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME_NEW).build();
+        public static final Uri CONTENT_URI_FAVORITE =
+                BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME_FAVORITE).build();
     }
 }
