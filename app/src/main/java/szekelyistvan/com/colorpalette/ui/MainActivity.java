@@ -35,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.util.InternetClient;
+import szekelyistvan.com.colorpalette.util.TopInternetClient;
 import szekelyistvan.com.colorpalette.util.PaletteAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
         Retrofit retrofit = builder.build();
 
-         InternetClient internetClient= retrofit.create(InternetClient.class);
-        Call<List<Palette>> call = internetClient.palettesData();
+         TopInternetClient internetClient= retrofit.create(TopInternetClient.class);
+        Call<List<Palette>> call = internetClient.topPalettesData();
 
         call.enqueue(new Callback<List<Palette>>() {
             @Override

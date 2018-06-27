@@ -1,6 +1,6 @@
 package szekelyistvan.com.colorpalette.util;
 
-/*Copyright 2018 Szekely Isyvan
+/*Copyright 2018 Szekely Istvan
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -26,9 +26,10 @@ import szekelyistvan.com.colorpalette.model.Palette;
  * https://www.youtube.com/watch?v=R4XU8yPzSx0
  */
 
-public interface InternetClient {
-    public static final String REQUEST_URL = "top?format=json&numResults=100&showPaletteWidths=1";
+public interface NewInternetClient {
+    public static final String REQUEST_URL_NEW = "new?format=json&numResults=100&showPaletteWidths=1";
 
-    @GET(REQUEST_URL)
-    Call<List<Palette>> palettesData();
+    @GET(REQUEST_URL_NEW)
+    Call<List<Palette>> newPalettesData();
 }
+
