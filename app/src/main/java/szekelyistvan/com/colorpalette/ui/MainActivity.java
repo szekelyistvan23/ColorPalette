@@ -1,6 +1,6 @@
 package szekelyistvan.com.colorpalette.ui;
 
-/*Copyright 2018 Szekely Isyvan
+/*Copyright 2018 Szekely Istvan
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Palette>> call, Response<List<Palette>> response) {
                 palettes = response.body();
+                checkArray();
                 paletteAdapter.changePaletteData(palettes);
-
             }
 
             @Override
@@ -114,5 +114,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private void checkArray(){
+        List<Palette> resultArray = new ArrayList<>();
+        for (Palette palette:palettes) {
+            if (palette.getColors().size() >= 4){
+                resultArray.add(palette);
+            }
+        }
+        palettes = resultArray;
     }
 }
