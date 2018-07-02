@@ -14,4 +14,6 @@
     <string name="share_palette">Share palette details</string>
     <string name="palette_s_name">Palette\'s name</string>
     <string name="install_browser">Install Internet browser!</string>
+    <string name="delete_list">Delete list</string>
+    <string name="exit">Exit</string>
 </resources>

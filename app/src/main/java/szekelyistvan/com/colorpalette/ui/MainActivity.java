@@ -24,6 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -41,9 +43,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.util.NewInternetClient;
-import szekelyistvan.com.colorpalette.util.TopInternetClient;
+import szekelyistvan.com.colorpalette.network.NewInternetClient;
+import szekelyistvan.com.colorpalette.network.TopInternetClient;
 import szekelyistvan.com.colorpalette.util.PaletteAdapter;
+import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
@@ -186,4 +189,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.action_delete_list:
+                new PaletteAsyncQueryHandler(getContentResolver())
+                        .startDelete(0, null, CONTENT_URI_FAVORITE, null, null);
+                return true;
+            case R.id.action_exit:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
