@@ -14,20 +14,17 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +32,6 @@ import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,8 +41,11 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.util.ContrastColor;
 
-import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_DETAIL;
+import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.util.PaletteAdapter.HASH;
+import static szekelyistvan.com.colorpalette.util.PaletteAdapter.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,6 +71,7 @@ public class DetailFragment extends Fragment {
     public static final String EMPTY_STRING = "";
     public static final String WHITE = "#FFFFFF";
     public static final int SMALLER_SIZE = 4;
+    public static final String NO_COLOR = "no_color";
 
     public DetailFragment() {
     }
@@ -83,7 +83,7 @@ public class DetailFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         if (getArguments() != null) {
-            palette = getArguments().getParcelable(PALETTE_INDEX);
+            palette = getArguments().getParcelable(PALETTE_DETAIL);
         } else {
             getActivity().finish();
             Toast.makeText(getActivity(), R.string.no_data, Toast.LENGTH_SHORT).show();
@@ -98,6 +98,10 @@ public class DetailFragment extends Fragment {
             @Override
             public boolean onActionSelected(SpeedDialActionItem actionItem) {
                 switch (actionItem.getId()) {
+                    case R.id.fab_favorite:
+                        Uri uri = getActivity().getContentResolver().insert(CONTENT_URI_FAVORITE, paletteToContentValues(palette));
+                        Log.d(TAG, "onActionSelected: " + uri.toString());
+                        return false;
                     case R.id.fab_share:
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
@@ -130,7 +134,7 @@ public class DetailFragment extends Fragment {
 
     public static Fragment newInstance(Palette palette) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PALETTE_INDEX, palette);
+        bundle.putParcelable(PALETTE_DETAIL, palette);
         Fragment fragment = new DetailFragment();
         fragment.setArguments(bundle);
 

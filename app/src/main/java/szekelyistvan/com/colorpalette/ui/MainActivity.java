@@ -15,6 +15,7 @@ package szekelyistvan.com.colorpalette.ui;
         limitations under the License.*/
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
@@ -45,11 +46,15 @@ import szekelyistvan.com.colorpalette.util.TopInternetClient;
 import szekelyistvan.com.colorpalette.util.PaletteAdapter;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
+import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
-    public static final String PALETTE_INDEX = "palette_index";
+    public static final String PALETTE_DETAIL = "palette_detail";
     public static final String PALETTE_ARRAY = "palette_array";
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
@@ -104,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 Bundle args = new Bundle();
-                args.putInt(PALETTE_INDEX, position);
+                args.putInt(PALETTE_DETAIL, position);
                 args.putParcelableArrayList(PALETTE_ARRAY, (ArrayList<? extends Parcelable>) palettes);
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtras(args);
@@ -118,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
      * Gson converter. The implementation is based on:
      * https://www.youtube.com/watch?v=R4XU8yPzSx0
      * */
-    private void downloadJsonData(@InternetClient String client){
+    private void downloadJsonData(final @InternetClient String client){
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -145,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 palettes = response.body();
                 checkArray();
                 paletteAdapter.changePaletteData(palettes);
+                arrayToContentProvider(client);
             }
 
             @Override
@@ -164,4 +170,20 @@ public class MainActivity extends AppCompatActivity {
         }
         palettes = resultArray;
     }
+
+    private void arrayToContentProvider(@InternetClient String database){
+        Uri uri = null;
+        switch(database){
+            case TOP:
+                uri = CONTENT_URI_TOP;
+                break;
+            case NEW:
+                uri = CONTENT_URI_NEW;
+                break;
+        }
+        for (Palette palette:palettes) {
+            getContentResolver().insert(uri, paletteToContentValues(palette));
+        }
+    }
+
 }

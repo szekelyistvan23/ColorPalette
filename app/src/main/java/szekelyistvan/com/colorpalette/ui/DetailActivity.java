@@ -29,7 +29,7 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_DETAIL;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -45,8 +45,8 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        if (getIntent().hasExtra(PALETTE_INDEX)){
-            paletteIndex = getIntent().getIntExtra(PALETTE_INDEX, 0);
+        if (getIntent().hasExtra(PALETTE_DETAIL)){
+            paletteIndex = getIntent().getIntExtra(PALETTE_DETAIL, 0);
         }
 
         if (getIntent().hasExtra(PALETTE_ARRAY)){
