@@ -1,4 +1,4 @@
-package szekelyistvan.com.colorpalette.util;
+package szekelyistvan.com.colorpalette.network;
 
 /*Copyright 2018 Szekely Istvan
 
