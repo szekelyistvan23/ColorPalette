@@ -40,6 +40,7 @@ import butterknife.Unbinder;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.util.ContrastColor;
+import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_DETAIL;
@@ -99,8 +100,8 @@ public class DetailFragment extends Fragment {
             public boolean onActionSelected(SpeedDialActionItem actionItem) {
                 switch (actionItem.getId()) {
                     case R.id.fab_favorite:
-                        Uri uri = getActivity().getContentResolver().insert(CONTENT_URI_FAVORITE, paletteToContentValues(palette));
-                        Log.d(TAG, "onActionSelected: " + uri.toString());
+                        PaletteAsyncQueryHandler paletteAsync = new PaletteAsyncQueryHandler(getActivity().getContentResolver());
+                        paletteAsync.startInsert(0, null, CONTENT_URI_FAVORITE, paletteToContentValues(palette));
                         return false;
                     case R.id.fab_share:
                         Intent sendIntent = new Intent();
