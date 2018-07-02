@@ -173,15 +173,11 @@ public class DetailFragment extends Fragment {
     private void setTextViewProperties(TextView textView, int position) {
         textView.setBackgroundColor(Color.parseColor(HASH + palette.getColors().get(position)));
         textView.setTextColor(ContrastColor.getContrastColor(Color.parseColor(extractBackgroundColor(position))));
-        textView.setText(HASH + palette.getColors().get(position));
+        textView.setText(extractBackgroundColor(position));
     }
 
     private String extractBackgroundColor(int position) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(HASH);
-        stringBuilder.append(palette.getColors().get(position));
-
-        return stringBuilder.toString();
+        return HASH + palette.getColors().get(position);
     }
 
     public void closeFab(){
