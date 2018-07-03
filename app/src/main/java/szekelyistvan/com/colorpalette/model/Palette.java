@@ -24,7 +24,13 @@ public class Palette implements Parcelable {
     private String badgeUrl;
     private String apiUrl;
 
-        public int getId() {
+    public Palette(String title, List<String> colors, String url) {
+        this.title = title;
+        this.colors = colors;
+        this.url = url;
+    }
+
+    public int getId() {
             return id;
         }
 

@@ -16,4 +16,5 @@
     <string name="install_browser">Install Internet browser!</string>
     <string name="delete_list">Delete list</string>
     <string name="exit">Exit</string>
+    <string name="no_favorite">No favorite palettes!</string>
 </resources>

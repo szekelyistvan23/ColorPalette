@@ -13,10 +13,10 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
 
 public class DatabaseUtils {
+    public static final String[] columns = {PALETTES_COLUMN_COLOR_ONE, PALETTES_COLUMN_COLOR_TWO,
+            PALETTES_COLUMN_COLOR_THREE, PALETTES_COLUMN_COLOR_FOUR,
+            PALETTES_COLUMN_COLOR_FIVE};
     public static ContentValues paletteToContentValues(Palette palette){
-        String[] columns = {PALETTES_COLUMN_COLOR_ONE, PALETTES_COLUMN_COLOR_TWO,
-                PALETTES_COLUMN_COLOR_THREE, PALETTES_COLUMN_COLOR_FOUR,
-                PALETTES_COLUMN_COLOR_FIVE};
         int size = palette.getColors().size();
 
         ContentValues contentValues = new ContentValues();

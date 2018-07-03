@@ -15,11 +15,13 @@ package szekelyistvan.com.colorpalette.ui;
         limitations under the License.*/
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,9 +54,12 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_LINK;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
+import static szekelyistvan.com.colorpalette.util.DatabaseUtils.columns;
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PaletteAsyncQueryHandler.AsyncQueryListener{
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
     public static final String PALETTE_DETAIL = "palette_detail";
@@ -65,12 +70,17 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
     PaletteAdapter paletteAdapter;
+    private PaletteAsyncQueryHandler asyncHandler;
 
     @Retention(SOURCE)
     @StringDef({ TOP, NEW})
     public @interface InternetClient {}
     public static final String TOP = "top";
     public static final String NEW = "new";
+    private boolean isTopButtonClicked;
+    private boolean isNewButtonClicked;
+    private boolean isFavoriteButtonClicked;
+    private String lastButtonClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,25 +88,37 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Butterknife is distributed under Apache License, Version 2.0
         ButterKnife.bind(this);
+        asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
 
         setupRecyclerView();
-        downloadJsonData(TOP);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.palette_top:
-                        downloadJsonData(TOP);
+                        asyncHandler.startQuery(0, null, CONTENT_URI_TOP, null, null, null, null);
+                        isTopButtonClicked = true; isNewButtonClicked = false; isFavoriteButtonClicked = false;
                         break;
                     case R.id.palette_new:
-                        downloadJsonData(NEW);
+                        asyncHandler.startQuery(0, null, CONTENT_URI_NEW, null, null, null, null);
+                        isTopButtonClicked = false; isNewButtonClicked = true; isFavoriteButtonClicked = false;
                         break;
                     case R.id.palette_favorite:
+                        asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, null, null, null, null);
+                        if (isTopButtonClicked){
+                            lastButtonClicked = TOP;
+                        }
+                        if (isNewButtonClicked){
+                            lastButtonClicked = NEW;
+                        }
+                        isTopButtonClicked = false; isNewButtonClicked = false; isFavoriteButtonClicked = true;
+                        break;
                 }
                 return true;
             }
         });
+        bottomNavigationView.setSelectedItemId(R.id.palette_top);
     }
 
     /**
@@ -189,6 +211,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private List<Palette> cursorToArrayList (Cursor cursor){
+        List<Palette> resultArrayList = new ArrayList<>();
+        List<String> color = new ArrayList<>();
+        while (cursor.moveToNext()){
+            color = new ArrayList<>();
+            String title = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_PALETTE_NAME));
+            String url = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_LINK));
+            for (int i = 0; i < 5; i++){
+                color.add(cursor.getString(cursor.getColumnIndex(columns[i])));
+            }
+            resultArrayList.add(new Palette(title, color, url));
+        }
+        return resultArrayList;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -210,6 +247,30 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onQueryComplete(Cursor cursor) {
+        if (cursor.getCount() != 0){
+            palettes = cursorToArrayList(cursor);
+            paletteAdapter.changePaletteData(palettes);
+        } else {
+            if (isTopButtonClicked) {
+                downloadJsonData(TOP);
+            }
+            if (isNewButtonClicked) {
+                downloadJsonData(NEW);
+            }
+            if (isFavoriteButtonClicked){
+                if (lastButtonClicked.equals(TOP)){
+                    isTopButtonClicked = true; isNewButtonClicked = false; isFavoriteButtonClicked = false;
+                }
+                if (lastButtonClicked.equals(NEW)){
+                    isTopButtonClicked = false; isNewButtonClicked = true; isFavoriteButtonClicked = false;
+                }
+                Snackbar.make(findViewById(R.id.main_layout), R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
 }
