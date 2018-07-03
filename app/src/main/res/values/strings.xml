@@ -17,4 +17,5 @@
     <string name="delete_list">Delete list</string>
     <string name="exit">Exit</string>
     <string name="no_favorite">No favorite palettes!</string>
+    <string name="added_to_favorites_list">Added to favorites list</string>
 </resources>
