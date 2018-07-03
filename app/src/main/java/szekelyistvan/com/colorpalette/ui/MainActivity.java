@@ -207,13 +207,13 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
                 break;
         }
         for (Palette palette:palettes) {
-            getContentResolver().insert(uri, paletteToContentValues(palette));
+            asyncHandler.startInsert(0,null, uri, paletteToContentValues(palette));
         }
     }
 
     private List<Palette> cursorToArrayList (Cursor cursor){
         List<Palette> resultArrayList = new ArrayList<>();
-        List<String> color = new ArrayList<>();
+        List<String> color;
         while (cursor.moveToNext()){
             color = new ArrayList<>();
             String title = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_PALETTE_NAME));
@@ -239,8 +239,7 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         int id = item.getItemId();
         switch (id){
             case R.id.action_delete_list:
-                new PaletteAsyncQueryHandler(getContentResolver())
-                        .startDelete(0, null, CONTENT_URI_FAVORITE, null, null);
+                asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, null, null);
                 return true;
             case R.id.action_exit:
                 finish();
