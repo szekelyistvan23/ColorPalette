@@ -262,13 +262,14 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
                 downloadJsonData(NEW);
             }
             if (isFavoriteButtonClicked){
+                Snackbar.make(findViewById(R.id.main_layout), R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
                 if (lastButtonClicked.equals(TOP)){
-                    isTopButtonClicked = true; isNewButtonClicked = false; isFavoriteButtonClicked = false;
+                    bottomNavigationView.setSelectedItemId(R.id.palette_top);
                 }
                 if (lastButtonClicked.equals(NEW)){
-                    isTopButtonClicked = false; isNewButtonClicked = true; isFavoriteButtonClicked = false;
+                    bottomNavigationView.setSelectedItemId(R.id.palette_new);
                 }
-                Snackbar.make(findViewById(R.id.main_layout), R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
+
             }
         }
     }
