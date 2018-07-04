@@ -23,8 +23,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 
@@ -44,6 +47,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        Fabric.with(this, new Crashlytics());
 
         if (getIntent().hasExtra(PALETTE_DETAIL)){
             paletteIndex = getIntent().getIntExtra(PALETTE_DETAIL, 0);

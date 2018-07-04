@@ -31,12 +31,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         setContentView(R.layout.activity_main);
         // Butterknife is distributed under Apache License, Version 2.0
         ButterKnife.bind(this);
+        Fabric.with(this, new Crashlytics());
         asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
 
         setupRecyclerView();
@@ -221,8 +225,9 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
             String data;
             for (int i = 0; i < 5; i++){
                 data = cursor.getString(cursor.getColumnIndex(columns[i]));
-                if (data != null && !data.equals("") )
-                color.add(data);
+                if (data != null && !data.equals("") ) {
+                    color.add(data);
+                }
             }
             resultArrayList.add(new Palette(title, color, url));
         }
