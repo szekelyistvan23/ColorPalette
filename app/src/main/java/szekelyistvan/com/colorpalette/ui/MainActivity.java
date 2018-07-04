@@ -32,6 +32,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
@@ -84,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
     private boolean isNewButtonClicked;
     private boolean isFavoriteButtonClicked;
     private String lastButtonClicked;
+    private InterstitialAd interstitialAd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +98,9 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         // Butterknife is distributed under Apache License, Version 2.0
         ButterKnife.bind(this);
         Fabric.with(this, new Crashlytics());
+
+        initializeMobileAd();
+
         asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
 
         setupRecyclerView();
@@ -125,6 +134,25 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         bottomNavigationView.setSelectedItemId(R.id.palette_top);
     }
 
+    private void initializeMobileAd(){
+        MobileAds.initialize(this,
+                "ca-app-pub-3940256099942544~3347511713");
+
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
+    private void startDetailActivity(int position){
+        Bundle args = new Bundle();
+        args.putInt(PALETTE_DETAIL, position);
+        args.putParcelableArrayList(PALETTE_ARRAY, (ArrayList<? extends Parcelable>) palettes);
+        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+        intent.putExtras(args);
+        startActivity(intent);
+    }
+
     /**
      * Sets up a RecyclerView to display the palettes.
      */
@@ -136,13 +164,23 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         // Based on: https://antonioleiva.com/recyclerview-listener/
         paletteAdapter = new PaletteAdapter(new ArrayList<Palette>(), new PaletteAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                Bundle args = new Bundle();
-                args.putInt(PALETTE_DETAIL, position);
-                args.putParcelableArrayList(PALETTE_ARRAY, (ArrayList<? extends Parcelable>) palettes);
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                intent.putExtras(args);
-                startActivity(intent);
+            public void onItemClick(final int position) {
+                if (interstitialAd.isLoaded()) {
+                    interstitialAd.show();
+                }
+
+                interstitialAd.setAdListener(new AdListener(){
+                    @Override
+                    public void onAdClosed() {
+                        interstitialAd.loadAd(new AdRequest.Builder().build());
+                        startDetailActivity(position);
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(int i) {
+                        startDetailActivity(position);
+                    }
+                });
             }
         });
         recyclerView.setAdapter(paletteAdapter);
