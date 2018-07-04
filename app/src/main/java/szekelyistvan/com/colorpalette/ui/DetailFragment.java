@@ -16,6 +16,7 @@ package szekelyistvan.com.colorpalette.ui;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +46,10 @@ import szekelyistvan.com.colorpalette.util.ContrastColor;
 import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_LINK;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_DETAIL;
+import static szekelyistvan.com.colorpalette.util.DatabaseUtils.columns;
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.util.PaletteAdapter.HASH;
 import static szekelyistvan.com.colorpalette.util.PaletteAdapter.TAG;
@@ -52,9 +57,10 @@ import static szekelyistvan.com.colorpalette.util.PaletteAdapter.TAG;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler.AsyncQueryListener{
 
     private Palette palette;
+    private PaletteAsyncQueryHandler asyncHandler;
 
     @BindView(R.id.detailTextView)
     TextView detailTextView;
@@ -85,6 +91,8 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        asyncHandler = new PaletteAsyncQueryHandler(getActivity().getContentResolver(), this);
 
         if (getArguments() != null) {
             palette = getArguments().getParcelable(PALETTE_DETAIL);
@@ -128,6 +136,10 @@ public class DetailFragment extends Fragment {
                 }
             }
         });
+
+        String[] projection = { PALETTES_COLUMN_PALETTE_NAME};
+        String[] selectionArgs ={palette.getTitle()};
+        asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, projection, "PALETTE_NAME =?", selectionArgs, null);
         return view;
     }
 
@@ -135,6 +147,15 @@ public class DetailFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onQueryComplete(Cursor cursor) {
+    String query = extractPaletteName(cursor);
+    if (query.equals(palette.getTitle())){
+        favoriteImage.setVisibility(View.VISIBLE);
+    }
+        Log.d(TAG, "onQueryComplete: " + query);
     }
 
     public static Fragment newInstance(Palette palette) {
@@ -189,4 +210,13 @@ public class DetailFragment extends Fragment {
             speedDialView.close(true);
         }
     }
+
+    private String extractPaletteName (Cursor cursor){
+        String result="";
+        while (cursor.moveToNext()){
+            result = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_PALETTE_NAME));
+        }
+        return result;
+    }
+
 }
