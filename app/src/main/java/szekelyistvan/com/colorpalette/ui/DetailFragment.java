@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,8 @@ public class DetailFragment extends Fragment {
     TextView detailTextViewFour;
     @BindView(R.id.speed_dial_view)
     SpeedDialView speedDialView;
+    @BindView(R.id.favorite_image)
+    ImageView favoriteImage;
     private Unbinder unbinder;
 
     public static final String EMPTY_STRING = "";
@@ -100,6 +103,7 @@ public class DetailFragment extends Fragment {
             public boolean onActionSelected(SpeedDialActionItem actionItem) {
                 switch (actionItem.getId()) {
                     case R.id.fab_favorite:
+                        favoriteImage.setVisibility(View.VISIBLE);
                         PaletteAsyncQueryHandler paletteAsync = new PaletteAsyncQueryHandler(getActivity().getContentResolver());
                         paletteAsync.startInsert(0, null, CONTENT_URI_FAVORITE, paletteToContentValues(palette));
                         return false;
