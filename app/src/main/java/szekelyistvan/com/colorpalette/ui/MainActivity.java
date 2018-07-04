@@ -218,8 +218,11 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
             color = new ArrayList<>();
             String title = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_PALETTE_NAME));
             String url = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_LINK));
+            String data;
             for (int i = 0; i < 5; i++){
-                color.add(cursor.getString(cursor.getColumnIndex(columns[i])));
+                data = cursor.getString(cursor.getColumnIndex(columns[i]));
+                if (data != null && !data.equals("") )
+                color.add(data);
             }
             resultArrayList.add(new Palette(title, color, url));
         }
