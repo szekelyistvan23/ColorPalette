@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -58,6 +59,7 @@ import szekelyistvan.com.colorpalette.util.PaletteAdapter;
 import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
     public static final String PALETTE_DETAIL = "palette_detail";
     public static final String PALETTE_ARRAY = "palette_array";
+    public static final String TAG = "ColorPalette";
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
     RecyclerView recyclerView;
@@ -98,8 +101,9 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         // Butterknife is distributed under Apache License, Version 2.0
         ButterKnife.bind(this);
         Fabric.with(this, new Crashlytics());
-
-        initializeMobileAd();
+        if (isNetworkConnection(this)){
+            initializeMobileAd();
+        }
 
         asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
 
@@ -144,6 +148,24 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         interstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
+    private void loadAd(final int position){
+        interstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+                startDetailActivity(position);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                Log.d(TAG, "onAdFailedToLoad: " + i);
+                startDetailActivity(position);
+            }
+        });
+
+            interstitialAd.show();
+    }
+
     private void startDetailActivity(int position){
         Bundle args = new Bundle();
         args.putInt(PALETTE_DETAIL, position);
@@ -165,22 +187,25 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         paletteAdapter = new PaletteAdapter(new ArrayList<Palette>(), new PaletteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position) {
-                if (interstitialAd.isLoaded()) {
-                    interstitialAd.show();
+                if (!isNetworkConnection(MainActivity.this)){
+                    startDetailActivity(position);
+                    return;
                 }
 
-                interstitialAd.setAdListener(new AdListener(){
-                    @Override
-                    public void onAdClosed() {
-                        interstitialAd.loadAd(new AdRequest.Builder().build());
-                        startDetailActivity(position);
-                    }
+                if (isNetworkConnection(MainActivity.this) && interstitialAd != null && !interstitialAd.isLoaded()){
+                    startDetailActivity(position);
+                    return;
+                }
 
-                    @Override
-                    public void onAdFailedToLoad(int i) {
-                        startDetailActivity(position);
-                    }
-                });
+                if (isNetworkConnection(MainActivity.this) && interstitialAd == null){
+                    startDetailActivity(position);
+                    initializeMobileAd();
+                    return;
+                }
+
+                if (isNetworkConnection(MainActivity.this) && interstitialAd != null && interstitialAd.isLoaded()) {
+                    loadAd(position);
+                }
             }
         });
         recyclerView.setAdapter(paletteAdapter);
@@ -315,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
                 if (lastButtonClicked.equals(NEW)){
                     bottomNavigationView.setSelectedItemId(R.id.palette_new);
                 }
-
             }
         }
     }
