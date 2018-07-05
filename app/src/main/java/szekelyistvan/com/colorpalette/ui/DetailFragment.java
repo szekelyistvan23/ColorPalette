@@ -111,9 +111,14 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
             public boolean onActionSelected(SpeedDialActionItem actionItem) {
                 switch (actionItem.getId()) {
                     case R.id.fab_favorite:
-                        favoriteImage.setVisibility(View.VISIBLE);
-                        PaletteAsyncQueryHandler paletteAsync = new PaletteAsyncQueryHandler(getActivity().getContentResolver());
-                        paletteAsync.startInsert(0, null, CONTENT_URI_FAVORITE, paletteToContentValues(palette));
+                        if (favoriteImage.getVisibility() == View.GONE) {
+                            favoriteImage.setVisibility(View.VISIBLE);
+                            asyncHandler.startInsert(0, null, CONTENT_URI_FAVORITE, paletteToContentValues(palette));
+                        } else {
+                            favoriteImage.setVisibility(View.GONE);
+                            String[] selectionArgs ={palette.getTitle()};
+                            asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, "PALETTE_NAME =?", selectionArgs);
+                        }
                         return false;
                     case R.id.fab_share:
                         Intent sendIntent = new Intent();

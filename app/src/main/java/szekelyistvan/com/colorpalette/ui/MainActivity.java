@@ -162,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
                 startDetailActivity(position);
             }
         });
-
             interstitialAd.show();
     }
 
