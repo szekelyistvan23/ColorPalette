@@ -14,7 +14,6 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -33,7 +32,6 @@ import android.widget.Toast;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,10 +44,8 @@ import szekelyistvan.com.colorpalette.util.ContrastColor;
 import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
-import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_LINK;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_DETAIL;
-import static szekelyistvan.com.colorpalette.util.DatabaseUtils.columns;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.util.PaletteAdapter.HASH;
 import static szekelyistvan.com.colorpalette.util.PaletteAdapter.TAG;
@@ -95,7 +91,7 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
         asyncHandler = new PaletteAsyncQueryHandler(getActivity().getContentResolver(), this);
 
         if (getArguments() != null) {
-            palette = getArguments().getParcelable(PALETTE_DETAIL);
+            palette = getArguments().getParcelable(PALETTE_INDEX);
         } else {
             getActivity().finish();
             Toast.makeText(getActivity(), R.string.no_data, Toast.LENGTH_SHORT).show();
@@ -165,7 +161,7 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
 
     public static Fragment newInstance(Palette palette) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PALETTE_DETAIL, palette);
+        bundle.putParcelable(PALETTE_INDEX, palette);
         Fragment fragment = new DetailFragment();
         fragment.setArguments(bundle);
 

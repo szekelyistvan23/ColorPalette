@@ -14,6 +14,7 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
+import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -30,16 +31,20 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
+import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_DETAIL;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
+import static szekelyistvan.com.colorpalette.util.DatabaseUtils.cursorToArrayList;
+import static szekelyistvan.com.colorpalette.widget.PaletteWidget.POSITION_FROM_WIDGET;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements PaletteAsyncQueryHandler.AsyncQueryListener{
 
     private int paletteIndex;
     private List<Palette> baseArray;
     private DetailFragment detailFragment;
-
+    private PaletteAsyncQueryHandler asyncHandler;
 
     PalettePagerAdapter palettePagerAdapter;
     ViewPager viewPager;
@@ -48,9 +53,10 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         Fabric.with(this, new Crashlytics());
+        asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
 
-        if (getIntent().hasExtra(PALETTE_DETAIL)){
-            paletteIndex = getIntent().getIntExtra(PALETTE_DETAIL, 0);
+        if (getIntent().hasExtra(PALETTE_INDEX)){
+            paletteIndex = getIntent().getIntExtra(PALETTE_INDEX, 0);
         }
 
         if (getIntent().hasExtra(PALETTE_ARRAY)){
@@ -59,6 +65,11 @@ public class DetailActivity extends AppCompatActivity {
 
         if (baseArray != null && baseArray.size() > 0){
             setUpViewPager();
+        } else {
+            if (getIntent().hasExtra(POSITION_FROM_WIDGET)) {
+                paletteIndex = getIntent().getIntExtra(POSITION_FROM_WIDGET, 0);
+                asyncHandler.startQuery(0, null, CONTENT_URI_NEW, null, null, null, null);
+            }
         }
     }
 
@@ -104,6 +115,14 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return baseArray.size();
+        }
+    }
+
+    @Override
+    public void onQueryComplete(Cursor cursor) {
+        if (cursor !=null && cursor.getCount() > 0){
+            baseArray = cursorToArrayList(cursor);
+            setUpViewPager();
         }
     }
 
