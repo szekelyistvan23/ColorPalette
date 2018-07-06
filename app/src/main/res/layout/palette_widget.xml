@@ -2,7 +2,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#09C"
     android:padding="@dimen/widget_margin"
     android:orientation="vertical">
 
@@ -10,15 +9,13 @@
         android:id="@+id/appwidget_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="#09C"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
+        android:textStyle="bold"
         android:text="@string/app_name"/>
 
     <ListView android:id="@+id/widget_list_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:dividerHeight="1dp"
-        android:divider="#eeeeee"
+        android:layout_height="match_parent"
         tools:listitem="@layout/palette_widget_list_item"/>
 </LinearLayout>
