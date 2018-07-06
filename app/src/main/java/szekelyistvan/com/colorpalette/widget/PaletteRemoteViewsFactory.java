@@ -71,16 +71,16 @@ public class PaletteRemoteViewsFactory implements RemoteViewsService.RemoteViews
             return null;
         }
 
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.palette_widget);
-        remoteViews.setInt(R.id.appwidget_text, "setBackgroundColor", Color.parseColor(HASH +
-                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_ONE))));
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.palette_widget_list_item);
         remoteViews.setInt(R.id.appwidget_text_one, "setBackgroundColor", Color.parseColor(HASH +
-                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_TWO))));
+                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_ONE))));
         remoteViews.setInt(R.id.appwidget_text_two, "setBackgroundColor", Color.parseColor(HASH +
-                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_THREE))));
+                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_TWO))));
         remoteViews.setInt(R.id.appwidget_text_three, "setBackgroundColor", Color.parseColor(HASH +
-                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_FOUR))));
+                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_THREE))));
         remoteViews.setInt(R.id.appwidget_text_four, "setBackgroundColor", Color.parseColor(HASH +
+                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_FOUR))));
+        remoteViews.setInt(R.id.appwidget_text_five, "setBackgroundColor", Color.parseColor(HASH +
                 cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_FIVE))));
 
         return remoteViews;
