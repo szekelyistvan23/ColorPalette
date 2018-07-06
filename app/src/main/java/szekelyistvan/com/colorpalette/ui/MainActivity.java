@@ -63,15 +63,13 @@ import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConn
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
-import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_LINK;
-import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
-import static szekelyistvan.com.colorpalette.util.DatabaseUtils.columns;
+import static szekelyistvan.com.colorpalette.util.DatabaseUtils.cursorToArrayList;
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
 
 public class MainActivity extends AppCompatActivity implements PaletteAsyncQueryHandler.AsyncQueryListener{
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
-    public static final String PALETTE_DETAIL = "palette_detail";
+    public static final String PALETTE_INDEX = "palette_index";
     public static final String PALETTE_ARRAY = "palette_array";
     public static final String TAG = "ColorPalette";
     List<Palette> palettes;
@@ -167,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
 
     private void startDetailActivity(int position){
         Bundle args = new Bundle();
-        args.putInt(PALETTE_DETAIL, position);
+        args.putInt(PALETTE_INDEX, position);
         args.putParcelableArrayList(PALETTE_ARRAY, (ArrayList<? extends Parcelable>) palettes);
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         intent.putExtras(args);
@@ -275,25 +273,6 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         for (Palette palette:palettes) {
             asyncHandler.startInsert(0,null, uri, paletteToContentValues(palette));
         }
-    }
-
-    private List<Palette> cursorToArrayList (Cursor cursor){
-        List<Palette> resultArrayList = new ArrayList<>();
-        List<String> color;
-        while (cursor.moveToNext()){
-            color = new ArrayList<>();
-            String title = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_PALETTE_NAME));
-            String url = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_LINK));
-            String data;
-            for (int i = 0; i < 5; i++){
-                data = cursor.getString(cursor.getColumnIndex(columns[i]));
-                if (data != null && !data.equals("") ) {
-                    color.add(data);
-                }
-            }
-            resultArrayList.add(new Palette(title, color, url));
-        }
-        return resultArrayList;
     }
 
     @Override
