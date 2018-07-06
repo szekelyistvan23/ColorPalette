@@ -18,12 +18,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.DetailActivity"
-                android:parentActivityName=".ui.MainActivity"/>
+        <activity
+            android:name=".ui.DetailActivity"
+            android:parentActivityName=".ui.MainActivity" />
+
         <provider
+            android:name=".provider.PaletteContentProvider"
             android:authorities="szekelyistvan.com.colorpalette"
-            android:name="szekelyistvan.com.colorpalette.provider.PaletteContentProvider"
-            android:exported="false"/>
+            android:exported="false" />
+
+        <receiver android:name=".widget.PaletteWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/palette_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
