@@ -57,34 +57,37 @@ public class DetailActivity extends AppCompatActivity {
             baseArray = getIntent().getParcelableArrayListExtra(PALETTE_ARRAY);
         }
 
-        if (baseArray != null){
-
-            palettePagerAdapter = new PalettePagerAdapter(getSupportFragmentManager());
-
-            viewPager = findViewById(R.id.viewpager);
-            viewPager.setAdapter(palettePagerAdapter);
-
-            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    setTitle(baseArray.get(position).getTitle());
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-                    detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-                    if (detailFragment != null && state == 1) {
-                        detailFragment.closeFab();
-                    }
-                }
-            });
-
-         viewPager.setCurrentItem(paletteIndex, false);
+        if (baseArray != null && baseArray.size() > 0){
+            setUpViewPager();
         }
+    }
+
+    private void setUpViewPager(){
+        palettePagerAdapter = new PalettePagerAdapter(getSupportFragmentManager());
+
+        viewPager = findViewById(R.id.viewpager);
+        viewPager.setAdapter(palettePagerAdapter);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setTitle(baseArray.get(position).getTitle());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                if (detailFragment != null && state == 1) {
+                    detailFragment.closeFab();
+                }
+            }
+        });
+
+        viewPager.setCurrentItem(paletteIndex, false);
     }
 
     public class PalettePagerAdapter extends FragmentStatePagerAdapter {
