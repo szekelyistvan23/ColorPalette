@@ -7,5 +7,4 @@
     android:previewImage="@drawable/widget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
-    android:configure="szekelyistvan.com.colorpalette.widget.PaletteWidgetConfiguration"
     android:widgetCategory="home_screen"></appwidget-provider>

@@ -12,7 +12,7 @@ import android.widget.RemoteViewsService;
 
 import szekelyistvan.com.colorpalette.R;
 
-import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_COLOR_FIVE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_COLOR_FOUR;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_COLOR_ONE;
@@ -47,7 +47,7 @@ public class PaletteRemoteViewsFactory implements RemoteViewsService.RemoteViews
 
         cursor = context
                         .getContentResolver()
-                        .query(CONTENT_URI_NEW,null, null, null, null);
+                        .query(CONTENT_URI_TOP,null, null, null, null);
 
         Binder.restoreCallingIdentity(identityToken);
 
