@@ -191,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         intent.putExtras(args);
         startActivity(intent);
+        // Based on: https://stackoverflow.com/a/12092980
+        overridePendingTransition(R.anim.slide_in, R.anim.no_animation);
+
     }
 
     /**

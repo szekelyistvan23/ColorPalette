@@ -144,5 +144,7 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
             detailFragment.closeFab();
         }
         super.onBackPressed();
+        // Based on: https://stackoverflow.com/a/12092980
+        overridePendingTransition(R.anim.no_animation, R.anim.slide_out);
     }
 }
