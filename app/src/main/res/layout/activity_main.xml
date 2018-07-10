@@ -34,10 +34,10 @@
         app:layout_constraintStart_toStartOf="parent"/>
 </android.support.constraint.ConstraintLayout>
     <ProgressBar
-        android:id="@+id/service_downloading"
+        android:id="@+id/downloadProgress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:visibility="visible"
+        android:visibility="gone"
         style="?android:attr/progressBarStyleLarge"/>
 </android.support.design.widget.CoordinatorLayout>

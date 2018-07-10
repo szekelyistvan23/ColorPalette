@@ -14,7 +14,9 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
@@ -31,6 +33,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -79,11 +83,15 @@ public class MainActivity extends AppCompatActivity implements
     public static final String PALETTE_INDEX = "palette_index";
     public static final String PALETTE_ARRAY = "palette_array";
     public static final String TAG = "ColorPalette";
+    public static final String DEFAULT_SHARED_PREFERENCES = "PalettePreferences";
+    public static final String APP_HAS_RUN_BEFORE = "app_has_run_before";
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
     RecyclerView recyclerView;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
+    @BindView(R.id.downloadProgress)
+    ProgressBar progressBar;
     PaletteAdapter paletteAdapter;
     private PaletteAsyncQueryHandler asyncHandler;
 
@@ -113,12 +121,6 @@ public class MainActivity extends AppCompatActivity implements
 
         asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
 
-        resultReceiver = new PaletteResultReceiver(new Handler());
-        resultReceiver.setReceiver(this);
-
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, PaletteIntentService.class);
-        startService(intent);
-
         setupRecyclerView();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -147,7 +149,12 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             }
         });
-        bottomNavigationView.setSelectedItemId(R.id.palette_top);
+        if (appHasRunBefore(this)){
+            bottomNavigationView.setSelectedItemId(R.id.palette_top);
+        } else {
+            startService();
+            appRunBefore(this);
+        }
     }
 
     private void initializeMobileAd(){
@@ -222,71 +229,29 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setAdapter(paletteAdapter);
     }
 
-    /** Downloads data from the Internet using Retrofit and converts it to a List using
-     * Gson converter. The implementation is based on:
-     * https://www.youtube.com/watch?v=R4XU8yPzSx0
-     * */
-    private void downloadJsonData(final @InternetClient String client){
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        Retrofit retrofit = builder.build();
-
-        TopInternetClient topInternetClient= retrofit.create(TopInternetClient.class);
-        NewInternetClient newInternetClient= retrofit.create(NewInternetClient.class);
-        Call<List<Palette>> call = null;
-
-        switch(client){
-            case TOP:
-                call = topInternetClient.topPalettesData();
-                break;
-            case NEW:
-                call = newInternetClient.newPalettesData();
-                break;
-        }
-
-        call.enqueue(new Callback<List<Palette>>() {
-            @Override
-            public void onResponse(Call<List<Palette>> call, Response<List<Palette>> response) {
-                palettes = response.body();
-                checkArray();
-                paletteAdapter.changePaletteData(palettes);
-                arrayToContentProvider(client);
-            }
-
-            @Override
-            public void onFailure(Call<List<Palette>> call, Throwable t) {
-                finish();
-                Toast.makeText(MainActivity.this, t.toString(),Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-    private void checkArray(){
-        List<Palette> resultArray = new ArrayList<>();
-        for (Palette palette:palettes) {
-            if (palette.getColors().size() >= 4){
-                resultArray.add(palette);
-            }
-        }
-        palettes = resultArray;
+    private boolean isAnyButtonCLicked(){
+        return !isTopButtonClicked && !isNewButtonClicked && !isFavoriteButtonClicked;
     }
 
-    private void arrayToContentProvider(@InternetClient String database){
-        Uri uri = null;
-        switch(database){
-            case TOP:
-                uri = CONTENT_URI_TOP;
-                break;
-            case NEW:
-                uri = CONTENT_URI_NEW;
-                break;
-        }
-        for (Palette palette:palettes) {
-            asyncHandler.startInsert(0,null, uri, paletteToContentValues(palette));
-        }
+    private void startService(){
+        resultReceiver = new PaletteResultReceiver(new Handler());
+        resultReceiver.setReceiver(this);
+
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, PaletteIntentService.class);
+        intent.putExtra("receiver", resultReceiver);
+        startService(intent);
+    }
+
+    public static boolean appHasRunBefore(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DEFAULT_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(APP_HAS_RUN_BEFORE, false);
+    }
+
+    public static void appRunBefore(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DEFAULT_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(APP_HAS_RUN_BEFORE, true);
+        editor.apply();
     }
 
     @Override
@@ -314,24 +279,17 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onQueryComplete(Cursor cursor) {
+
         if (cursor.getCount() != 0){
             palettes = cursorToArrayList(cursor);
             paletteAdapter.changePaletteData(palettes);
         } else {
-            if (isTopButtonClicked) {
-                downloadJsonData(TOP);
+            Snackbar.make(findViewById(R.id.main_layout), R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
+            if (lastButtonClicked != null && lastButtonClicked.equals(TOP)) {
+                bottomNavigationView.setSelectedItemId(R.id.palette_top);
             }
-            if (isNewButtonClicked) {
-                downloadJsonData(NEW);
-            }
-            if (isFavoriteButtonClicked){
-                Snackbar.make(findViewById(R.id.main_layout), R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
-                if (lastButtonClicked.equals(TOP)){
-                    bottomNavigationView.setSelectedItemId(R.id.palette_top);
-                }
-                if (lastButtonClicked.equals(NEW)){
-                    bottomNavigationView.setSelectedItemId(R.id.palette_new);
-                }
+            if (lastButtonClicked != null && lastButtonClicked.equals(NEW)) {
+                bottomNavigationView.setSelectedItemId(R.id.palette_new);
             }
         }
     }
@@ -340,12 +298,15 @@ public class MainActivity extends AppCompatActivity implements
     public void onReceiveResult(int resultCode) {
         switch (resultCode) {
             case STATUS_STARTED:
+                progressBar.setVisibility(View.VISIBLE);
                 break;
             case STATUS_FINISHED:
+                progressBar.setVisibility(View.GONE);
+                bottomNavigationView.setSelectedItemId(R.id.palette_top);
                 break;
             case STATUS_ERROR:
+                progressBar.setVisibility(View.GONE);
                 break;
         }
-
     }
 }

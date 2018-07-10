@@ -39,7 +39,7 @@ public class PaletteIntentService extends IntentService{
     public static final int STATUS_FINISHED = 1;
     public static final int STATUS_ERROR = 2;
 
-    private ResultReceiver resultReceiver = null;
+    private ResultReceiver resultReceiver;
     private List<Palette> palettes;
 
     public PaletteIntentService() {
@@ -48,6 +48,8 @@ public class PaletteIntentService extends IntentService{
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+
+        resultReceiver = intent.getParcelableExtra("receiver");
 
         if (!isNetworkConnection(getApplicationContext())){
             resultReceiver.send(STATUS_ERROR, Bundle.EMPTY);
