@@ -17,6 +17,7 @@ package szekelyistvan.com.colorpalette.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
@@ -55,6 +56,8 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.network.NewInternetClient;
 import szekelyistvan.com.colorpalette.network.TopInternetClient;
+import szekelyistvan.com.colorpalette.service.PaletteIntentService;
+import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
 import szekelyistvan.com.colorpalette.util.PaletteAdapter;
 import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
@@ -63,10 +66,14 @@ import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConn
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
+import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_ERROR;
+import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_FINISHED;
+import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_STARTED;
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.cursorToArrayList;
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
 
-public class MainActivity extends AppCompatActivity implements PaletteAsyncQueryHandler.AsyncQueryListener{
+public class MainActivity extends AppCompatActivity implements
+        PaletteAsyncQueryHandler.AsyncQueryListener, PaletteResultReceiver.Receiver{
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
     public static final String PALETTE_INDEX = "palette_index";
@@ -90,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
     private boolean isFavoriteButtonClicked;
     private String lastButtonClicked;
     private InterstitialAd interstitialAd;
+    private PaletteResultReceiver resultReceiver;
 
 
     @Override
@@ -104,6 +112,12 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
         }
 
         asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
+
+        resultReceiver = new PaletteResultReceiver(new Handler());
+        resultReceiver.setReceiver(this);
+
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, PaletteIntentService.class);
+        startService(intent);
 
         setupRecyclerView();
 
@@ -320,5 +334,18 @@ public class MainActivity extends AppCompatActivity implements PaletteAsyncQuery
                 }
             }
         }
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode) {
+        switch (resultCode) {
+            case STATUS_STARTED:
+                break;
+            case STATUS_FINISHED:
+                break;
+            case STATUS_ERROR:
+                break;
+        }
+
     }
 }
