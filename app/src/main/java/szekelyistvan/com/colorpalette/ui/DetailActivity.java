@@ -31,6 +31,7 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
+import szekelyistvan.com.colorpalette.util.DepthPageTransformer;
 import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
@@ -78,7 +79,7 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
 
         viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(palettePagerAdapter);
-
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
