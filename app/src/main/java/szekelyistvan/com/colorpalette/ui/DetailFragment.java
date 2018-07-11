@@ -43,6 +43,7 @@ import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.util.ContrastColor;
 import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
+import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
@@ -124,6 +125,7 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
                         startActivity(Intent.createChooser(sendIntent, getString(R.string.share_palette)));
                         return false;
                     case R.id.fab_link:
+                if (isNetworkConnection(getActivity())) {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(palette.getUrl()));
                         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -131,6 +133,9 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
                         } else {
                             Snackbar.make(DetailFragment.this.getView(), R.string.install_browser, Snackbar.LENGTH_SHORT).show();
                         }
+                } else {
+                    Snackbar.make(DetailFragment.this.getView(), R.string.no_internet, Snackbar.LENGTH_SHORT).show();
+                }
                         return false;
                     default:
                         return false;

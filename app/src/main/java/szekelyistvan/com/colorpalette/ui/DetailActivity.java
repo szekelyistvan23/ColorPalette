@@ -35,6 +35,7 @@ import szekelyistvan.com.colorpalette.util.DepthPageTransformer;
 import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
+import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.cursorToArrayList;
@@ -69,7 +70,7 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
         } else {
             if (getIntent().hasExtra(POSITION_FROM_WIDGET)) {
                 paletteIndex = getIntent().getIntExtra(POSITION_FROM_WIDGET, 0);
-                asyncHandler.startQuery(0, null, CONTENT_URI_NEW, null, null, null, null);
+                asyncHandler.startQuery(0, null, CONTENT_URI_TOP, null, null, null, null);
             }
         }
     }
@@ -123,6 +124,7 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
     public void onQueryComplete(Cursor cursor) {
         if (cursor !=null && cursor.getCount() > 0){
             baseArray = cursorToArrayList(cursor);
+            setTitle(baseArray.get(paletteIndex).getTitle());
             setUpViewPager();
         }
     }

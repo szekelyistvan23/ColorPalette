@@ -80,8 +80,13 @@ public class PaletteRemoteViewsFactory implements RemoteViewsService.RemoteViews
                 cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_THREE))));
         remoteViews.setInt(R.id.appwidget_text_four, "setBackgroundColor", Color.parseColor(HASH +
                 cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_FOUR))));
-        remoteViews.setInt(R.id.appwidget_text_five, "setBackgroundColor", Color.parseColor(HASH +
-                cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_FIVE))));
+
+        String color = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_FIVE));
+        if (color != null) {
+            remoteViews.setInt(R.id.appwidget_text_five, "setBackgroundColor", Color.parseColor(HASH + color));
+        } else {
+            remoteViews.setInt(R.id.appwidget_text_five, "setBackgroundColor", Color.WHITE);
+        }
 
         Intent fillInIntent = new Intent();
         fillInIntent.putExtra(PaletteWidget.POSITION_FROM_WIDGET, position);
