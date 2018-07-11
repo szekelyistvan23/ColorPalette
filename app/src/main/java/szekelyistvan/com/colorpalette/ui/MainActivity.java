@@ -258,6 +258,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (isFavoriteButtonClicked) {
+            bottomNavigationView.setSelectedItemId(R.id.palette_favorite);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
@@ -309,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case STATUS_ERROR:
                 progressBar.setVisibility(View.GONE);
+                Snackbar.make(findViewById(R.id.main_layout), R.string.error_message, Snackbar.LENGTH_SHORT).show();
                 break;
         }
     }

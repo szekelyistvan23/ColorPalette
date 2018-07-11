@@ -66,6 +66,7 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
         }
 
         if (baseArray != null && baseArray.size() > 0){
+            setTitle(baseArray.get(paletteIndex).getTitle());
             setUpViewPager();
         } else {
             if (getIntent().hasExtra(POSITION_FROM_WIDGET)) {
