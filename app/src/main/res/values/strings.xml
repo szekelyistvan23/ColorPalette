@@ -5,7 +5,6 @@
     <string name="color_three">Color three</string>
     <string name="color_four">Color four</string>
     <string name="color_five">Color five</string>
-    <string name="giant_goldfish">Giant Goldfish</string>
     <string name="no_internet">No internet connection!</string>
     <string name="no_data">No received data!</string>
     <string name="unknown_uri">Unknown uri: </string>
@@ -18,7 +17,5 @@
     <string name="exit">Exit</string>
     <string name="no_favorite">No favorite palettes!</string>
     <string name="added_to_favorites_list">Added to favorites list</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
     <string name="error_message">Something went wrong!</string>
 </resources>

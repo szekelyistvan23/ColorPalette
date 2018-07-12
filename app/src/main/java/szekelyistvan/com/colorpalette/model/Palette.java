@@ -197,6 +197,7 @@ public class Palette implements Parcelable {
             this.rank = in.readInt();
             this.dateCreated = in.readString();
             this.colors = in.createStringArrayList();
+            //noinspection Convert2Diamond
             this.colorWidths = new ArrayList<Double>();
             in.readList(this.colorWidths, Double.class.getClassLoader());
             this.description = in.readString();

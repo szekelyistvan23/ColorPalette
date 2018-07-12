@@ -34,7 +34,6 @@ import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.util.DepthPageTransformer;
 import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
 
-import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;

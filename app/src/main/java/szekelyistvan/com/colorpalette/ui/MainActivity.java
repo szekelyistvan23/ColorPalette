@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
@@ -37,7 +36,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdListener;
@@ -52,16 +50,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.network.NewInternetClient;
-import szekelyistvan.com.colorpalette.network.TopInternetClient;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
 import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
 import szekelyistvan.com.colorpalette.util.PaletteAdapter;
@@ -76,7 +67,6 @@ import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_FINISHED;
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_STARTED;
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.cursorToArrayList;
-import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
 
 public class MainActivity extends AppCompatActivity implements
         PaletteAsyncQueryHandler.AsyncQueryListener, PaletteResultReceiver.Receiver{
