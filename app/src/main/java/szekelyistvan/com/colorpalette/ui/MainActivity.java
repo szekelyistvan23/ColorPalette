@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.support.design.widget.BottomNavigationView;
@@ -86,6 +87,14 @@ public class MainActivity extends AppCompatActivity implements
     public static final String TAG = "ColorPalette";
     public static final String DEFAULT_SHARED_PREFERENCES = "PalettePreferences";
     public static final String APP_HAS_RUN_BEFORE = "app_has_run_before";
+    public static final String TOP_STATE = "top_state";
+    public static final String NEW_STATE = "new_state";
+    public static final String FAVORITE_STATE = "favorite_state";
+    public static final String TOP_BUTTON_CLICKED = "top_button_clicked";
+    public static final String NEW_BUTTON_CLICKED = "new_button_clicked";
+    public static final String FAVORITE_BUTTON_CLICKED = "favorite_button_clicked";
+    public static final String LAST_BUTTON_CLICKED = "last_button_clicked";
+
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
     RecyclerView recyclerView;
@@ -97,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements
     Toolbar mainActivityToolbar;
     PaletteAdapter paletteAdapter;
     private PaletteAsyncQueryHandler asyncHandler;
+    private LinearLayoutManager linearLayoutManager;
 
     @Retention(SOURCE)
     @StringDef({ TOP, NEW})
@@ -124,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         setSupportActionBar(mainActivityToolbar);
         Fabric.with(this, new Crashlytics());
+
         if (isNetworkConnection(this)){
             initializeMobileAd();
         }
@@ -179,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements
             favoriteState = recyclerView.getLayoutManager().onSaveInstanceState();
         }
     }
-
     private void restoreListState(){
         if (isTopButtonClicked && topState != null){
             recyclerView.getLayoutManager().onRestoreInstanceState(topState);
@@ -190,6 +200,18 @@ public class MainActivity extends AppCompatActivity implements
         if (isFavoriteButtonClicked && favoriteState != null){
             recyclerView.getLayoutManager().onRestoreInstanceState(favoriteState);
         }
+    }
+
+    private void saveListsState (Bundle state){
+        state.putParcelable(TOP_STATE, topState);
+        state.putParcelable(NEW_STATE, newState);
+        state.putParcelable(FAVORITE_STATE, favoriteState);
+    }
+
+    private void restoreListsState (Bundle state){
+        topState = state.getParcelable(TOP_STATE);
+        newState = state.getParcelable(NEW_STATE);
+        favoriteState = state.getParcelable(FAVORITE_STATE);
     }
 
     private void initializeMobileAd(){
@@ -237,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements
     private void setupRecyclerView(){
         recyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         // Based on: https://antonioleiva.com/recyclerview-listener/
         paletteAdapter = new PaletteAdapter(new ArrayList<Palette>(), new PaletteAdapter.OnItemClickListener() {
@@ -373,5 +395,17 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }, 5000);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        saveListsState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        restoreListsState(savedInstanceState);
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
     }
 }
