@@ -1,4 +1,4 @@
-package szekelyistvan.com.colorpalette.util;
+package szekelyistvan.com.colorpalette.utils;
 
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;

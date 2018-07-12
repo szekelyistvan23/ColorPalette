@@ -1,4 +1,4 @@
-package szekelyistvan.com.colorpalette.util;
+package szekelyistvan.com.colorpalette.utils;
 
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;

@@ -1,4 +1,4 @@
-package szekelyistvan.com.colorpalette.util;
+package szekelyistvan.com.colorpalette.utils;
 
 /**
  * Based on: https://android.jlelse.eu/scroll-your-bottom-navigation-view-away-with-10-lines-of-code-346f1ed40e9e
@@ -6,12 +6,9 @@ package szekelyistvan.com.colorpalette.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;

@@ -41,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/palette_navigation_items"
-        app:layout_behavior="szekelyistvan.com.colorpalette.util.PaletteBottomNavigationBehavior"/>
+        app:layout_behavior="szekelyistvan.com.colorpalette.utils.PaletteBottomNavigationBehavior"/>
 
     <ProgressBar
         android:id="@+id/downloadProgress"

@@ -31,13 +31,13 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.util.DepthPageTransformer;
-import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
+import szekelyistvan.com.colorpalette.utils.DepthPageTransformer;
+import szekelyistvan.com.colorpalette.utils.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
-import static szekelyistvan.com.colorpalette.util.DatabaseUtils.cursorToArrayList;
+import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
 import static szekelyistvan.com.colorpalette.widget.PaletteWidget.POSITION_FROM_WIDGET;
 
 public class DetailActivity extends AppCompatActivity implements PaletteAsyncQueryHandler.AsyncQueryListener{

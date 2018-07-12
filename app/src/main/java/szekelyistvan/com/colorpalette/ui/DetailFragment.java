@@ -40,16 +40,16 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.util.ContrastColor;
-import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
+import szekelyistvan.com.colorpalette.utils.ContrastColor;
+import szekelyistvan.com.colorpalette.utils.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
-import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
-import static szekelyistvan.com.colorpalette.util.PaletteAdapter.HASH;
-import static szekelyistvan.com.colorpalette.util.PaletteAdapter.TAG;
+import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.paletteToContentValues;
+import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
+import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.TAG;
 
 /**
  * A simple {@link Fragment} subclass.

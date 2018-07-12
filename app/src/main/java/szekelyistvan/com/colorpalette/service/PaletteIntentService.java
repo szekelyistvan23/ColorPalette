@@ -19,7 +19,7 @@ import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.network.NewInternetClient;
 import szekelyistvan.com.colorpalette.network.TopInternetClient;
 import szekelyistvan.com.colorpalette.ui.MainActivity;
-import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
+import szekelyistvan.com.colorpalette.utils.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
@@ -27,7 +27,7 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.ui.MainActivity.BASE_URL;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.NEW;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TOP;
-import static szekelyistvan.com.colorpalette.util.DatabaseUtils.paletteToContentValues;
+import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.paletteToContentValues;
 
 /**
  * Based on: http://stacktips.com/tutorials/android/creating-a-background-service-in-android

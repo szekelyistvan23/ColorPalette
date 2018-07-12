@@ -58,8 +58,8 @@ import szekelyistvan.com.colorpalette.dialogs.ExitAppDialog;
 import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
 import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
-import szekelyistvan.com.colorpalette.util.PaletteAdapter;
-import szekelyistvan.com.colorpalette.util.PaletteAsyncQueryHandler;
+import szekelyistvan.com.colorpalette.utils.PaletteAdapter;
+import szekelyistvan.com.colorpalette.utils.PaletteAsyncQueryHandler;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
@@ -69,7 +69,7 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_ERROR;
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_FINISHED;
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_STARTED;
-import static szekelyistvan.com.colorpalette.util.DatabaseUtils.cursorToArrayList;
+import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
 
 public class MainActivity extends AppCompatActivity implements
         PaletteAsyncQueryHandler.AsyncQueryListener, PaletteResultReceiver.Receiver,
