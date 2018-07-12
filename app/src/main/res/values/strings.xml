@@ -20,4 +20,6 @@
     <string name="error_message">Something went wrong!</string>
     <string name="exit_app">Do you want to exit from the app?</string>
     <string name="cancel_dialog">cancel</string>
+    <string name="delete">Delete</string>
+    <string name="implement_dialog">must implement DeleteDialogListener!</string>
 </resources>

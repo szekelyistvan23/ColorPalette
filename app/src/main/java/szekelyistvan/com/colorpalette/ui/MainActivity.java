@@ -53,6 +53,7 @@ import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 import szekelyistvan.com.colorpalette.R;
+import szekelyistvan.com.colorpalette.dialogs.DeleteDialog;
 import szekelyistvan.com.colorpalette.dialogs.ExitAppDialog;
 import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
@@ -71,7 +72,8 @@ import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS
 import static szekelyistvan.com.colorpalette.util.DatabaseUtils.cursorToArrayList;
 
 public class MainActivity extends AppCompatActivity implements
-        PaletteAsyncQueryHandler.AsyncQueryListener, PaletteResultReceiver.Receiver{
+        PaletteAsyncQueryHandler.AsyncQueryListener, PaletteResultReceiver.Receiver,
+        DeleteDialog.DeleteDialogListener{
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
     public static final String PALETTE_INDEX = "palette_index";
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String FAVORITE_BUTTON_CLICKED = "favorite_button_clicked";
     public static final String LAST_BUTTON_CLICKED = "last_button_clicked";
     public static final String EXIT_APP_DIALOG = "exit_app_dialog";
+    public static final String DELETE_DIALOG = "delete_dialog";
 
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
@@ -328,7 +331,9 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id){
             case R.id.action_delete_list:
-                asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, null, null);
+                DialogFragment deleteDialog = new DeleteDialog();
+                deleteDialog.setCancelable(false);
+                deleteDialog.show(getSupportFragmentManager(), DELETE_DIALOG);
                 return true;
             case R.id.action_exit:
                 DialogFragment exitAppDialog = new ExitAppDialog();
@@ -402,5 +407,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
         restoreListsState(savedInstanceState);
         super.onRestoreInstanceState(savedInstanceState, persistentState);
+    }
+
+    @Override
+    public void onFavoriteListDelete() {
+        if (isFavoriteButtonClicked) {
+            bottomNavigationView.setSelectedItemId(R.id.palette_favorite);
+        }
     }
 }
