@@ -110,6 +110,10 @@ public class MainActivity extends AppCompatActivity implements
     private InterstitialAd interstitialAd;
     private PaletteResultReceiver resultReceiver;
     private int backPressCounter;
+    private Parcelable topState;
+    private Parcelable newState;
+    private Parcelable favoriteState;
+
 
 
     @Override
@@ -133,14 +137,17 @@ public class MainActivity extends AppCompatActivity implements
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.palette_top:
+                        saveListState();
                         asyncHandler.startQuery(0, null, CONTENT_URI_TOP, null, null, null, null);
                         isTopButtonClicked = true; isNewButtonClicked = false; isFavoriteButtonClicked = false;
                         break;
                     case R.id.palette_new:
+                        saveListState();
                         asyncHandler.startQuery(0, null, CONTENT_URI_NEW, null, null, null, null);
                         isTopButtonClicked = false; isNewButtonClicked = true; isFavoriteButtonClicked = false;
                         break;
                     case R.id.palette_favorite:
+                        saveListState();
                         asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, null, null, null, null);
                         if (isTopButtonClicked){
                             lastButtonClicked = TOP;
@@ -159,6 +166,29 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             startService();
             appRunBefore(this);
+        }
+    }
+    private void saveListState(){
+        if (isTopButtonClicked){
+            topState = recyclerView.getLayoutManager().onSaveInstanceState();
+        }
+        if (isNewButtonClicked){
+            newState = recyclerView.getLayoutManager().onSaveInstanceState();
+        }
+        if (isFavoriteButtonClicked){
+            favoriteState = recyclerView.getLayoutManager().onSaveInstanceState();
+        }
+    }
+
+    private void restoreListState(){
+        if (isTopButtonClicked && topState != null){
+            recyclerView.getLayoutManager().onRestoreInstanceState(topState);
+        }
+        if (isNewButtonClicked && newState != null){
+            recyclerView.getLayoutManager().onRestoreInstanceState(newState);
+        }
+        if (isFavoriteButtonClicked && favoriteState != null){
+            recyclerView.getLayoutManager().onRestoreInstanceState(favoriteState);
         }
     }
 
@@ -299,6 +329,7 @@ public class MainActivity extends AppCompatActivity implements
         if (cursor.getCount() != 0){
             palettes = cursorToArrayList(cursor);
             paletteAdapter.changePaletteData(palettes);
+            restoreListState();
         } else {
             Snackbar.make(findViewById(R.id.main_layout), R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
             if (lastButtonClicked != null && lastButtonClicked.equals(TOP)) {
