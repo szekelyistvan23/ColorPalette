@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements
     private String lastButtonClicked;
     private InterstitialAd interstitialAd;
     private PaletteResultReceiver resultReceiver;
+    private int backPressCounter;
 
 
     @Override
@@ -323,6 +324,23 @@ public class MainActivity extends AppCompatActivity implements
                 progressBar.setVisibility(View.GONE);
                 Snackbar.make(findViewById(R.id.main_layout), R.string.error_message, Snackbar.LENGTH_SHORT).show();
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressCounter > 0) {
+            super.onBackPressed();
+        } else {
+            backPressCounter++;
+            Snackbar.make(findViewById(R.id.main_layout), "You are one click away to exit from the app", Snackbar.LENGTH_SHORT).show();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    backPressCounter = 0;
+                }
+            }, 5000);
         }
     }
 }

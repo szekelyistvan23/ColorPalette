@@ -46,7 +46,7 @@ class PaletteBottomNavigationBehavior <V extends View> extends CoordinatorLayout
 
     private void updateSnackbar(View child, Snackbar.SnackbarLayout snackbarLayout) {
         if (snackbarLayout.getLayoutParams() instanceof CoordinatorLayout.LayoutParams) {
-            CoordinatorLayout.LayoutParams params = null;
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)snackbarLayout.getLayoutParams();
 
             params.setAnchorId(child.getId());
             params.anchorGravity = Gravity.TOP;
