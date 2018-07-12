@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,6 +53,7 @@ import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 import szekelyistvan.com.colorpalette.R;
+import szekelyistvan.com.colorpalette.dialogs.ExitAppDialog;
 import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
 import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String NEW_BUTTON_CLICKED = "new_button_clicked";
     public static final String FAVORITE_BUTTON_CLICKED = "favorite_button_clicked";
     public static final String LAST_BUTTON_CLICKED = "last_button_clicked";
+    public static final String EXIT_APP_DIALOG = "exit_app_dialog";
 
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
@@ -328,7 +331,9 @@ public class MainActivity extends AppCompatActivity implements
                 asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, null, null);
                 return true;
             case R.id.action_exit:
-                finish();
+                DialogFragment exitAppDialog = new ExitAppDialog();
+                exitAppDialog.setCancelable(false);
+                exitAppDialog.show(getSupportFragmentManager(), EXIT_APP_DIALOG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -18,4 +18,6 @@
     <string name="no_favorite">No favorite palettes!</string>
     <string name="added_to_favorites_list">Added to favorites list</string>
     <string name="error_message">Something went wrong!</string>
+    <string name="exit_app">Do you want to exit from the app?</string>
+    <string name="cancel_dialog">cancel</string>
 </resources>
