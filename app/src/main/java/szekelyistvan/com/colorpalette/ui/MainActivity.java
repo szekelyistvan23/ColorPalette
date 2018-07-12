@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -92,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements
     BottomNavigationView bottomNavigationView;
     @BindView(R.id.downloadProgress)
     ProgressBar progressBar;
+    @BindView(R.id.main_activity_toolbar)
+    Toolbar mainActivityToolbar;
     PaletteAdapter paletteAdapter;
     private PaletteAsyncQueryHandler asyncHandler;
 
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         // Butterknife is distributed under Apache License, Version 2.0
         ButterKnife.bind(this);
+        setSupportActionBar(mainActivityToolbar);
         Fabric.with(this, new Crashlytics());
         if (isNetworkConnection(this)){
             initializeMobileAd();
