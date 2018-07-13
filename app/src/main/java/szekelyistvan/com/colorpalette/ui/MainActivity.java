@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public static final String NEW_BUTTON_CLICKED = "new_button_clicked";
     public static final String FAVORITE_BUTTON_CLICKED = "favorite_button_clicked";
     public static final String LAST_BUTTON_CLICKED = "last_button_clicked";
+    public static final String SCROLL_POSITION = "scroll_position";
     public static final String EXIT_APP_DIALOG = "exit_app_dialog";
     public static final String DELETE_DIALOG = "delete_dialog";
     public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
@@ -146,6 +147,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
 
         setupRecyclerView();
 
+        if (savedInstanceState != null){
+            restoreListsState(savedInstanceState);
+        }
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -176,11 +181,29 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             }
         });
         if (appHasRunBefore(this)){
-            bottomNavigationView.setSelectedItemId(R.id.palette_top);
+            if (!selectList()) {
+                bottomNavigationView.setSelectedItemId(R.id.palette_top);
+            }
         } else {
             startService();
             appRunBefore(this);
         }
+    }
+
+    private boolean selectList(){
+        if (isTopButtonClicked){
+            bottomNavigationView.setSelectedItemId(R.id.palette_top);
+            return true;
+        }
+        if (isNewButtonClicked){
+            bottomNavigationView.setSelectedItemId(R.id.palette_new);
+            return true;
+        }
+        if (isFavoriteButtonClicked){
+            bottomNavigationView.setSelectedItemId(R.id.palette_favorite);
+            return true;
+        }
+        return false;
     }
     private void saveListState(){
         if (isTopButtonClicked){
@@ -221,12 +244,20 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         state.putParcelable(TOP_STATE, topState);
         state.putParcelable(NEW_STATE, newState);
         state.putParcelable(FAVORITE_STATE, favoriteState);
+        state.putBoolean(TOP_BUTTON_CLICKED, isTopButtonClicked);
+        state.putBoolean(NEW_BUTTON_CLICKED, isNewButtonClicked);
+        state.putBoolean(FAVORITE_BUTTON_CLICKED, isFavoriteButtonClicked);
+        state.putString(LAST_BUTTON_CLICKED, lastButtonClicked);
     }
 
     private void restoreListsState (Bundle state){
         topState = state.getParcelable(TOP_STATE);
         newState = state.getParcelable(NEW_STATE);
         favoriteState = state.getParcelable(FAVORITE_STATE);
+        isTopButtonClicked = state.getBoolean(TOP_BUTTON_CLICKED);
+        isNewButtonClicked = state.getBoolean(NEW_BUTTON_CLICKED);
+        isFavoriteButtonClicked = state.getBoolean(FAVORITE_BUTTON_CLICKED);
+        lastButtonClicked = state.getString(LAST_BUTTON_CLICKED);
     }
 
     private void initializeMobileAd(){
@@ -443,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
-        restoreListsState(savedInstanceState);
+//        restoreListsState(savedInstanceState);
         super.onRestoreInstanceState(savedInstanceState, persistentState);
     }
 
