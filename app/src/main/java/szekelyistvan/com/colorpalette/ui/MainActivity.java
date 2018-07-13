@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     private PaletteAdapter paletteAdapter;
     private LinearLayoutManager linearLayoutManager;
     private boolean isListDeleteInitialized;
-    private boolean isAppStarted;
 
     @Retention(SOURCE)
     @StringDef({ TOP, NEW})
@@ -129,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     private Parcelable topState;
     private Parcelable newState;
     private Parcelable favoriteState;
-    private Parcelable initialState;
 
 
 
@@ -179,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         });
         if (appHasRunBefore(this)){
             bottomNavigationView.setSelectedItemId(R.id.palette_top);
-            isAppStarted = true;
         } else {
             startService();
             appRunBefore(this);
@@ -201,21 +198,21 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             if (topState != null) {
                 recyclerView.getLayoutManager().onRestoreInstanceState(topState);
             } else {
-                recyclerView.getLayoutManager().onRestoreInstanceState(initialState);
+                recyclerView.getLayoutManager().scrollToPosition(0);
             }
         }
         if (isNewButtonClicked){
             if (newState != null) {
                 recyclerView.getLayoutManager().onRestoreInstanceState(newState);
             } else {
-                recyclerView.getLayoutManager().onRestoreInstanceState(initialState);
+                recyclerView.getLayoutManager().scrollToPosition(0);
             }
         }
         if (isFavoriteButtonClicked){
             if (favoriteState != null) {
                 recyclerView.getLayoutManager().onRestoreInstanceState(favoriteState);
             } else {
-                recyclerView.getLayoutManager().onRestoreInstanceState(initialState);
+                recyclerView.getLayoutManager().scrollToPosition(0);
             }
         }
     }
@@ -388,10 +385,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         if (data.getCount() != 0){
             palettes = cursorToArrayList(data);
             paletteAdapter.changePaletteData(palettes);
-            if (isAppStarted){
-                initialState = recyclerView.getLayoutManager().onSaveInstanceState();
-                isAppStarted = false;
-            }
             restoreListState();
         } else {
             Snackbar.make(mainLayout, R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
