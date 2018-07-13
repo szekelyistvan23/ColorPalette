@@ -9,7 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import szekelyistvan.com.colorpalette.R;
-import szekelyistvan.com.colorpalette.utils.PaletteAsyncQueryHandler;
+import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 

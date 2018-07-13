@@ -64,7 +64,6 @@ import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
 import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
 import szekelyistvan.com.colorpalette.utils.PaletteAdapter;
-import szekelyistvan.com.colorpalette.utils.PaletteAsyncQueryHandler;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
@@ -74,8 +73,8 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_ERROR;
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_FINISHED;
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_STARTED;
-import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
-import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
+import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.cursorToArrayList;
+import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
 
 public class MainActivity extends AppCompatActivity implements PaletteResultReceiver.Receiver,
         DeleteDialog.DeleteDialogListener, LoaderManager.LoaderCallbacks<Cursor>{

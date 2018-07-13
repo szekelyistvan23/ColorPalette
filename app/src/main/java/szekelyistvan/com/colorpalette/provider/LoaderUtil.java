@@ -1,4 +1,4 @@
-package szekelyistvan.com.colorpalette.utils;
+package szekelyistvan.com.colorpalette.provider;
 
 import android.content.Context;
 import android.net.Uri;

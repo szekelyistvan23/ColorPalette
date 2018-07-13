@@ -42,8 +42,8 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.ui.MainActivity.LOADER_ID;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
-import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
-import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
+import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.cursorToArrayList;
+import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.widget.PaletteWidget.POSITION_FROM_WIDGET;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
