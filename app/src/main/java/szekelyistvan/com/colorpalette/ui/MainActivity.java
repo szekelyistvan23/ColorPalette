@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements
     private PaletteAsyncQueryHandler asyncHandler;
     private PaletteAdapter paletteAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private boolean isListDeleteInitialized;
 
     @Retention(SOURCE)
     @StringDef({ TOP, NEW})
@@ -335,9 +336,8 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id){
             case R.id.action_delete_list:
-                DialogFragment deleteDialog = new DeleteDialog();
-                deleteDialog.setCancelable(false);
-                deleteDialog.show(getSupportFragmentManager(), DELETE_DIALOG);
+                isListDeleteInitialized = true;
+                asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, null, null, null, null);
                 return true;
             case R.id.action_exit:
                 DialogFragment exitAppDialog = new ExitAppDialog();
@@ -351,6 +351,17 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onQueryComplete(Cursor cursor) {
+        if (isListDeleteInitialized && cursor.getCount()> 0){
+            DialogFragment deleteDialog = new DeleteDialog();
+            deleteDialog.setCancelable(false);
+            deleteDialog.show(getSupportFragmentManager(), DELETE_DIALOG);
+            isListDeleteInitialized = false;
+            return;
+        }
+
+        if(isListDeleteInitialized){
+            isListDeleteInitialized = false;
+        }
 
         if (cursor.getCount() != 0){
             palettes = cursorToArrayList(cursor);
