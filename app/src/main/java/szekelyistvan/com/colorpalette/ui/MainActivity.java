@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public static final String NEW_BUTTON_CLICKED = "new_button_clicked";
     public static final String FAVORITE_BUTTON_CLICKED = "favorite_button_clicked";
     public static final String LAST_BUTTON_CLICKED = "last_button_clicked";
-    public static final String SCROLL_POSITION = "scroll_position";
+    public static final String ADAPTER_DATA = "adapter_data";
     public static final String EXIT_APP_DIALOG = "exit_app_dialog";
     public static final String DELETE_DIALOG = "delete_dialog";
     public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
@@ -130,8 +130,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     private Parcelable newState;
     private Parcelable favoriteState;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,10 +145,25 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
 
         setupRecyclerView();
 
-        if (savedInstanceState != null){
-            restoreListsState(savedInstanceState);
-        }
+        setUpBottomNavigation();
 
+        if (savedInstanceState == null) {
+            if (appHasRunBefore(this)) {
+                if (!selectList()) {
+                    bottomNavigationView.setSelectedItemId(R.id.palette_top);
+                }
+            } else {
+                startService();
+                appRunBefore(this);
+            }
+        } else {
+            restoreListsState(savedInstanceState);
+            paletteAdapter.changePaletteData(palettes);
+            restoreListState();
+        }
+    }
+
+    private void setUpBottomNavigation(){
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -180,14 +193,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
                 return true;
             }
         });
-        if (appHasRunBefore(this)){
-            if (!selectList()) {
-                bottomNavigationView.setSelectedItemId(R.id.palette_top);
-            }
-        } else {
-            startService();
-            appRunBefore(this);
-        }
     }
 
     private boolean selectList(){
@@ -248,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         state.putBoolean(NEW_BUTTON_CLICKED, isNewButtonClicked);
         state.putBoolean(FAVORITE_BUTTON_CLICKED, isFavoriteButtonClicked);
         state.putString(LAST_BUTTON_CLICKED, lastButtonClicked);
+        state.putParcelableArrayList(ADAPTER_DATA, (ArrayList<? extends Parcelable>) palettes);
     }
 
     private void restoreListsState (Bundle state){
@@ -258,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         isNewButtonClicked = state.getBoolean(NEW_BUTTON_CLICKED);
         isFavoriteButtonClicked = state.getBoolean(FAVORITE_BUTTON_CLICKED);
         lastButtonClicked = state.getString(LAST_BUTTON_CLICKED);
+        palettes = state.getParcelableArrayList(ADAPTER_DATA);
     }
 
     private void initializeMobileAd(){
@@ -332,10 +339,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             }
         });
         recyclerView.setAdapter(paletteAdapter);
-    }
-
-    private boolean isAnyButtonCLicked(){
-        return !isTopButtonClicked && !isNewButtonClicked && !isFavoriteButtonClicked;
     }
 
     private void startService(){
@@ -445,6 +448,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             case STATUS_ERROR:
                 progressBar.setVisibility(View.GONE);
                 Snackbar.make(mainLayout, R.string.error_message, Snackbar.LENGTH_SHORT).show();
+                finish();
                 break;
         }
     }
@@ -470,12 +474,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     protected void onSaveInstanceState(Bundle outState) {
         saveListsState(outState);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
-//        restoreListsState(savedInstanceState);
-        super.onRestoreInstanceState(savedInstanceState, persistentState);
     }
 
     @Override
