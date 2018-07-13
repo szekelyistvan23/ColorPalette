@@ -27,7 +27,7 @@ import szekelyistvan.com.colorpalette.model.Palette;
  */
 
 public interface NewInternetClient {
-    public static final String REQUEST_URL_NEW = "new?format=json&numResults=100&showPaletteWidths=1";
+    String REQUEST_URL_NEW = "new?format=json&numResults=100&showPaletteWidths=1";
 
     @GET(REQUEST_URL_NEW)
     Call<List<Palette>> newPalettesData();

@@ -11,6 +11,6 @@ public class PaletteRemoteViewsService extends RemoteViewsService{
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new PaletteRemoteViewsFactory(this.getApplicationContext(), intent);
+        return new PaletteRemoteViewsFactory(this.getApplicationContext());
     }
 }

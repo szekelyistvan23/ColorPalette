@@ -19,6 +19,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -73,12 +74,19 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
     SpeedDialView speedDialView;
     @BindView(R.id.favorite_image)
     ImageView favoriteImage;
+    @BindView(R.id.detail_fragment_layout)
+    CoordinatorLayout detailFragmentLayout;
     private Unbinder unbinder;
 
     public static final String EMPTY_STRING = "";
     public static final String WHITE = "#FFFFFF";
     public static final int SMALLER_SIZE = 4;
     public static final String NO_COLOR = "no_color";
+    public static final String SELECTION = "PALETTE_NAME =?";
+    public static final String INTENT_TYPE = "text/plain";
+    public static final String SPACE_HASH = " #";
+    public static final String COMMA = ",";
+    public static final String COLON = ":";
 
     public DetailFragment() {
     }
@@ -114,14 +122,14 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
                         } else {
                             favoriteImage.setVisibility(View.GONE);
                             String[] selectionArgs ={palette.getTitle()};
-                            asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, "PALETTE_NAME =?", selectionArgs);
+                            asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, SELECTION, selectionArgs);
                         }
                         return false;
                     case R.id.fab_share:
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
                         sendIntent.putExtra(Intent.EXTRA_TEXT, sharePalette());
-                        sendIntent.setType("text/plain");
+                        sendIntent.setType(INTENT_TYPE);
                         startActivity(Intent.createChooser(sendIntent, getString(R.string.share_palette)));
                         return false;
                     case R.id.fab_link:
@@ -131,10 +139,10 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
                         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                             startActivity(intent);
                         } else {
-                            Snackbar.make(DetailFragment.this.getView(), R.string.install_browser, Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(detailFragmentLayout, R.string.install_browser, Snackbar.LENGTH_SHORT).show();
                         }
                 } else {
-                    Snackbar.make(DetailFragment.this.getView(), R.string.no_internet, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(detailFragmentLayout, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
                 }
                         return false;
                     default:
@@ -145,7 +153,7 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
 
         String[] projection = { PALETTES_COLUMN_PALETTE_NAME};
         String[] selectionArgs ={palette.getTitle()};
-        asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, projection, "PALETTE_NAME =?", selectionArgs, null);
+        asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, projection, SELECTION, selectionArgs, null);
         return view;
     }
 
@@ -176,13 +184,13 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
     private String sharePalette() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(palette.getTitle());
-        stringBuilder.append(":");
+        stringBuilder.append(COLON);
         int size = palette.getColors().size();
         for (int i = 0; i < size; i++) {
-            stringBuilder.append(" #");
+            stringBuilder.append(SPACE_HASH);
             stringBuilder.append(palette.getColors().get(i));
             if (i != size - 1) {
-                stringBuilder.append(",");
+                stringBuilder.append(COMMA);
             }
         }
         return stringBuilder.toString();

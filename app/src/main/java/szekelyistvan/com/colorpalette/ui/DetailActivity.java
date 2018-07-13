@@ -45,7 +45,6 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
     private int paletteIndex;
     private List<Palette> baseArray;
     private DetailFragment detailFragment;
-    private PaletteAsyncQueryHandler asyncHandler;
 
     PalettePagerAdapter palettePagerAdapter;
     ViewPager viewPager;
@@ -54,7 +53,7 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         Fabric.with(this, new Crashlytics());
-        asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
+        PaletteAsyncQueryHandler asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
 
         if (getIntent().hasExtra(PALETTE_INDEX)){
             paletteIndex = getIntent().getIntExtra(PALETTE_INDEX, 0);

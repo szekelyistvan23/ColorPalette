@@ -27,7 +27,7 @@ public class PaletteRemoteViewsFactory implements RemoteViewsService.RemoteViews
     private Context context;
     private Cursor cursor;
 
-    public PaletteRemoteViewsFactory(Context context, Intent intent) {
+    public PaletteRemoteViewsFactory(Context context) {
         this.context = context;
     }
 

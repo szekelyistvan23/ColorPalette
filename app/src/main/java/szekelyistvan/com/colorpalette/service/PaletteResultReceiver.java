@@ -16,7 +16,7 @@ public class PaletteResultReceiver extends ResultReceiver{
     }
 
     public interface Receiver{
-        public void onReceiveResult(int resultCode);
+        void onReceiveResult(int resultCode);
     }
 
     @Override

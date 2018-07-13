@@ -7,6 +7,7 @@ android {
     defaultConfig {
         applicationId "szekelyistvan.com.colorpalette"
         minSdkVersion 21
+        //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"

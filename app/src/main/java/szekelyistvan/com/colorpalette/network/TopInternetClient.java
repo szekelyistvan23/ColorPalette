@@ -27,7 +27,7 @@ import szekelyistvan.com.colorpalette.model.Palette;
  */
 
 public interface TopInternetClient {
-    public static final String REQUEST_URL = "top?format=json&numResults=100&showPaletteWidths=1";
+    String REQUEST_URL = "top?format=json&numResults=100&showPaletteWidths=1";
 
     @GET(REQUEST_URL)
     Call<List<Palette>> topPalettesData();

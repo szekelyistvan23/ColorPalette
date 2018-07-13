@@ -4,16 +4,16 @@
     <item
         android:id="@+id/fab_link"
         android:icon="@drawable/web_white"
-        android:title="Link" />
+        android:title="@string/link" />
 
     <item
         android:id="@+id/fab_share"
         android:icon="@drawable/share_white"
-        android:title="Share" />
+        android:title="@string/share" />
 
     <item
         android:id="@+id/fab_favorite"
         android:icon="@drawable/favorite_white"
-        android:title="Favorite" />
+        android:title="@string/favorite" />
 
 </menu>

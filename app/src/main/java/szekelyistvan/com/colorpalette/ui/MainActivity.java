@@ -24,6 +24,7 @@ import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String PALETTE_INDEX = "palette_index";
     public static final String PALETTE_ARRAY = "palette_array";
     public static final String TAG = "ColorPalette";
+    public static final String RECEIVER = "receiver";
     public static final String DEFAULT_SHARED_PREFERENCES = "PalettePreferences";
     public static final String APP_HAS_RUN_BEFORE = "app_has_run_before";
     public static final String TOP_STATE = "top_state";
@@ -90,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements
     public static final String LAST_BUTTON_CLICKED = "last_button_clicked";
     public static final String EXIT_APP_DIALOG = "exit_app_dialog";
     public static final String DELETE_DIALOG = "delete_dialog";
+    public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
+    public static final String ANOTHER_FORMAT_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
 
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
@@ -100,8 +104,10 @@ public class MainActivity extends AppCompatActivity implements
     ProgressBar progressBar;
     @BindView(R.id.main_activity_toolbar)
     Toolbar mainActivityToolbar;
-    PaletteAdapter paletteAdapter;
+    @BindView(R.id.main_layout)
+    CoordinatorLayout mainLayout;
     private PaletteAsyncQueryHandler asyncHandler;
+    private PaletteAdapter paletteAdapter;
     private LinearLayoutManager linearLayoutManager;
 
     @Retention(SOURCE)
@@ -114,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isFavoriteButtonClicked;
     private String lastButtonClicked;
     private InterstitialAd interstitialAd;
-    private PaletteResultReceiver resultReceiver;
     private int backPressCounter;
     private Parcelable topState;
     private Parcelable newState;
@@ -211,11 +216,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initializeMobileAd(){
-        MobileAds.initialize(this,
-                "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, AD_TEST_ID);
 
         interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        interstitialAd.setAdUnitId(ANOTHER_FORMAT_AD_TEST_ID);
 
         interstitialAd.loadAd(new AdRequest.Builder().build());
     }
@@ -290,11 +294,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void startService(){
-        resultReceiver = new PaletteResultReceiver(new Handler());
+        PaletteResultReceiver resultReceiver = new PaletteResultReceiver(new Handler());
         resultReceiver.setReceiver(this);
 
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, PaletteIntentService.class);
-        intent.putExtra("receiver", resultReceiver);
+        intent.putExtra(RECEIVER, resultReceiver);
         startService(intent);
     }
 
@@ -353,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements
             paletteAdapter.changePaletteData(palettes);
             restoreListState();
         } else {
-            Snackbar.make(findViewById(R.id.main_layout), R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mainLayout, R.string.no_favorite, Snackbar.LENGTH_SHORT).show();
             if (lastButtonClicked != null && lastButtonClicked.equals(TOP)) {
                 bottomNavigationView.setSelectedItemId(R.id.palette_top);
             }
@@ -375,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case STATUS_ERROR:
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(findViewById(R.id.main_layout), R.string.error_message, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mainLayout, R.string.error_message, Snackbar.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -386,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements
             super.onBackPressed();
         } else {
             backPressCounter++;
-            Snackbar.make(findViewById(R.id.main_layout), "You are one click away to exit from the app", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mainLayout, R.string.exit_message, Snackbar.LENGTH_SHORT).show();
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
