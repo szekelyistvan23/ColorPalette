@@ -19,9 +19,13 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,24 +45,26 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
+import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.utils.ContrastColor;
 import szekelyistvan.com.colorpalette.utils.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.LOADER_ID;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.paletteToContentValues;
+import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
 import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler.AsyncQueryListener{
+public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private Palette palette;
-    private PaletteAsyncQueryHandler asyncHandler;
 
     @BindView(R.id.detailTextView)
     TextView detailTextView;
@@ -96,8 +102,8 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         unbinder = ButterKnife.bind(this, view);
-
-        asyncHandler = new PaletteAsyncQueryHandler(getActivity().getContentResolver(), this);
+        final PaletteAsyncQueryHandler asyncHandler =
+                new PaletteAsyncQueryHandler(getActivity().getContentResolver());
 
         if (getArguments() != null) {
             palette = getArguments().getParcelable(PALETTE_INDEX);
@@ -107,8 +113,6 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
         }
 
         setBackgroundColor();
-
-        //TODO after load no internet in detail activity, crash
 
         speedDialView.inflate(R.menu.speed_dial_menu);
         speedDialView.setOnActionSelectedListener(new SpeedDialView.OnActionSelectedListener() {
@@ -151,9 +155,9 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
             }
         });
 
-        String[] projection = { PALETTES_COLUMN_PALETTE_NAME};
-        String[] selectionArgs ={palette.getTitle()};
-        asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, projection, SELECTION, selectionArgs, null);
+        getActivity()
+                .getSupportLoaderManager()
+                .restartLoader(LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,SELECTION,palette.getTitle()), this);
         return view;
     }
 
@@ -163,13 +167,23 @@ public class DetailFragment extends Fragment implements PaletteAsyncQueryHandler
         unbinder.unbind();
     }
 
+    @NonNull
     @Override
-    public void onQueryComplete(Cursor cursor) {
-    String query = extractPaletteName(cursor);
-    if (query.equals(palette.getTitle())){
-        favoriteImage.setVisibility(View.VISIBLE);
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return new PaletteLoader(getActivity(), args);
     }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        String query = extractPaletteName(data);
+        if (query.equals(palette.getTitle())){
+            favoriteImage.setVisibility(View.VISIBLE);
+        }
         Log.d(TAG, "onQueryComplete: " + query);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
     public static Fragment newInstance(Palette palette) {

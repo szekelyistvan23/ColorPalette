@@ -15,9 +15,13 @@ package szekelyistvan.com.colorpalette.ui;
         limitations under the License.*/
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,16 +35,18 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
+import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.utils.DepthPageTransformer;
-import szekelyistvan.com.colorpalette.utils.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.LOADER_ID;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
+import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.widget.PaletteWidget.POSITION_FROM_WIDGET;
 
-public class DetailActivity extends AppCompatActivity implements PaletteAsyncQueryHandler.AsyncQueryListener{
+public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private int paletteIndex;
     private List<Palette> baseArray;
@@ -53,7 +59,6 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         Fabric.with(this, new Crashlytics());
-        PaletteAsyncQueryHandler asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
 
         if (getIntent().hasExtra(PALETTE_INDEX)){
             paletteIndex = getIntent().getIntExtra(PALETTE_INDEX, 0);
@@ -69,7 +74,7 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
         } else {
             if (getIntent().hasExtra(POSITION_FROM_WIDGET)) {
                 paletteIndex = getIntent().getIntExtra(POSITION_FROM_WIDGET, 0);
-                asyncHandler.startQuery(0, null, CONTENT_URI_TOP, null, null, null, null);
+                getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), this);
             }
         }
     }
@@ -119,13 +124,23 @@ public class DetailActivity extends AppCompatActivity implements PaletteAsyncQue
         }
     }
 
+    @NonNull
     @Override
-    public void onQueryComplete(Cursor cursor) {
-        if (cursor !=null && cursor.getCount() > 0){
-            baseArray = cursorToArrayList(cursor);
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return new PaletteLoader(this, args);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (data !=null && data.getCount() > 0){
+            baseArray = cursorToArrayList(data);
             setTitle(baseArray.get(paletteIndex).getTitle());
             setUpViewPager();
         }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
     @Override

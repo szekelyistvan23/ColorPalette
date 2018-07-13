@@ -22,11 +22,14 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,6 +60,7 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.dialogs.DeleteDialog;
 import szekelyistvan.com.colorpalette.dialogs.ExitAppDialog;
 import szekelyistvan.com.colorpalette.model.Palette;
+import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
 import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
 import szekelyistvan.com.colorpalette.utils.PaletteAdapter;
@@ -71,10 +75,10 @@ import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_FINISHED;
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_STARTED;
 import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
+import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 
-public class MainActivity extends AppCompatActivity implements
-        PaletteAsyncQueryHandler.AsyncQueryListener, PaletteResultReceiver.Receiver,
-        DeleteDialog.DeleteDialogListener{
+public class MainActivity extends AppCompatActivity implements PaletteResultReceiver.Receiver,
+        DeleteDialog.DeleteDialogListener, LoaderManager.LoaderCallbacks<Cursor>{
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
     public static final String PALETTE_INDEX = "palette_index";
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String DELETE_DIALOG = "delete_dialog";
     public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
     public static final String ANOTHER_FORMAT_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
+    public static final int LOADER_ID = 22;
 
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
@@ -106,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements
     Toolbar mainActivityToolbar;
     @BindView(R.id.main_layout)
     CoordinatorLayout mainLayout;
-    private PaletteAsyncQueryHandler asyncHandler;
     private PaletteAdapter paletteAdapter;
     private LinearLayoutManager linearLayoutManager;
     private boolean isListDeleteInitialized;
@@ -141,8 +145,6 @@ public class MainActivity extends AppCompatActivity implements
             initializeMobileAd();
         }
 
-        asyncHandler = new PaletteAsyncQueryHandler(getContentResolver(), this);
-
         setupRecyclerView();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -151,17 +153,17 @@ public class MainActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                     case R.id.palette_top:
                         saveListState();
-                        asyncHandler.startQuery(0, null, CONTENT_URI_TOP, null, null, null, null);
+                        getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), MainActivity.this);
                         isTopButtonClicked = true; isNewButtonClicked = false; isFavoriteButtonClicked = false;
                         break;
                     case R.id.palette_new:
                         saveListState();
-                        asyncHandler.startQuery(0, null, CONTENT_URI_NEW, null, null, null, null);
+                        getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_NEW,null,null), MainActivity.this);
                         isTopButtonClicked = false; isNewButtonClicked = true; isFavoriteButtonClicked = false;
                         break;
                     case R.id.palette_favorite:
                         saveListState();
-                        asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, null, null, null, null);
+                        getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,null,null), MainActivity.this);
                         if (isTopButtonClicked){
                             lastButtonClicked = TOP;
                         }
@@ -337,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (id){
             case R.id.action_delete_list:
                 isListDeleteInitialized = true;
-                asyncHandler.startQuery(0, null, CONTENT_URI_FAVORITE, null, null, null, null);
+                getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,null,null), this);
                 return true;
             case R.id.action_exit:
                 DialogFragment exitAppDialog = new ExitAppDialog();
@@ -349,9 +351,15 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @NonNull
     @Override
-    public void onQueryComplete(Cursor cursor) {
-        if (isListDeleteInitialized && cursor.getCount()> 0){
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return new PaletteLoader(this, args);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (isListDeleteInitialized && data.getCount()> 0){
             DialogFragment deleteDialog = new DeleteDialog();
             deleteDialog.setCancelable(false);
             deleteDialog.show(getSupportFragmentManager(), DELETE_DIALOG);
@@ -363,8 +371,8 @@ public class MainActivity extends AppCompatActivity implements
             isListDeleteInitialized = false;
         }
 
-        if (cursor.getCount() != 0){
-            palettes = cursorToArrayList(cursor);
+        if (data.getCount() != 0){
+            palettes = cursorToArrayList(data);
             paletteAdapter.changePaletteData(palettes);
             restoreListState();
         } else {
@@ -376,6 +384,10 @@ public class MainActivity extends AppCompatActivity implements
                 bottomNavigationView.setSelectedItemId(R.id.palette_new);
             }
         }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
     @Override
