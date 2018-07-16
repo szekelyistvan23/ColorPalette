@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
                 }
             } else {
                 startService();
-                appRunBefore(this);
+                appRunBefore(this,true);
             }
         } else {
             restoreListsState(savedInstanceState);
@@ -355,10 +355,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         return sharedPreferences.getBoolean(APP_HAS_RUN_BEFORE, false);
     }
 
-    public static void appRunBefore(Context context){
+    public static void appRunBefore(Context context, boolean runBefore){
         SharedPreferences sharedPreferences = context.getSharedPreferences(DEFAULT_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(APP_HAS_RUN_BEFORE, true);
+        editor.putBoolean(APP_HAS_RUN_BEFORE, runBefore);
         editor.apply();
     }
 
@@ -447,8 +447,14 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
                 break;
             case STATUS_ERROR:
                 progressBar.setVisibility(View.GONE);
-                Snackbar.make(mainLayout, R.string.error_message, Snackbar.LENGTH_SHORT).show();
-                finish();
+                appRunBefore(this, false);
+                Snackbar.make(mainLayout, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                },2000);
                 break;
         }
     }
