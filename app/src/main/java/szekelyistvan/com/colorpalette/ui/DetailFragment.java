@@ -52,7 +52,7 @@ import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.LOADER_ID;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.MAIN_LOADER_ID;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
@@ -93,6 +93,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final String SPACE_HASH = " #";
     public static final String COMMA = ",";
     public static final String COLON = ":";
+    public static final int FRAGMENT_LOADER_ID = 33;
 
     public DetailFragment() {
     }
@@ -157,7 +158,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         getActivity()
                 .getSupportLoaderManager()
-                .restartLoader(LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,SELECTION,palette.getTitle()), this);
+                .restartLoader(FRAGMENT_LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,SELECTION,palette.getTitle()), this);
         return view;
     }
 

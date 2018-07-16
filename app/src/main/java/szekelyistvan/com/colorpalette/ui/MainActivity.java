@@ -20,7 +20,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
@@ -98,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public static final String DELETE_DIALOG = "delete_dialog";
     public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
     public static final String ANOTHER_FORMAT_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
-    public static final int LOADER_ID = 22;
+    public static final int MAIN_LOADER_ID = 11;
 
     List<Palette> palettes;
     @BindView(R.id.palette_recyclerview)
@@ -170,17 +169,17 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
                 switch (item.getItemId()) {
                     case R.id.palette_top:
                         saveListState();
-                        getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), MainActivity.this);
+                        getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), MainActivity.this);
                         isTopButtonClicked = true; isNewButtonClicked = false; isFavoriteButtonClicked = false;
                         break;
                     case R.id.palette_new:
                         saveListState();
-                        getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_NEW,null,null), MainActivity.this);
+                        getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_NEW,null,null), MainActivity.this);
                         isTopButtonClicked = false; isNewButtonClicked = true; isFavoriteButtonClicked = false;
                         break;
                     case R.id.palette_favorite:
                         saveListState();
-                        getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,null,null), MainActivity.this);
+                        getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,null,null), MainActivity.this);
                         if (isTopButtonClicked){
                             lastButtonClicked = TOP;
                         }
@@ -384,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         switch (id){
             case R.id.action_delete_list:
                 isListDeleteInitialized = true;
-                getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,null,null), this);
+                getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,null,null), this);
                 return true;
             case R.id.action_exit:
                 DialogFragment exitAppDialog = new ExitAppDialog();

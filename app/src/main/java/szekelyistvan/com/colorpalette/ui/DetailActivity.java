@@ -39,7 +39,7 @@ import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.utils.DepthPageTransformer;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.LOADER_ID;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.MAIN_LOADER_ID;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.cursorToArrayList;
@@ -51,6 +51,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     private int paletteIndex;
     private List<Palette> baseArray;
     private DetailFragment detailFragment;
+    public static final int DETAIL_LOADER_ID = 22;
 
     PalettePagerAdapter palettePagerAdapter;
     ViewPager viewPager;
@@ -74,7 +75,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         } else {
             if (getIntent().hasExtra(POSITION_FROM_WIDGET)) {
                 paletteIndex = getIntent().getIntExtra(POSITION_FROM_WIDGET, 0);
-                getSupportLoaderManager().restartLoader(LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), this);
+                getSupportLoaderManager().restartLoader(DETAIL_LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), this);
             }
         }
     }
