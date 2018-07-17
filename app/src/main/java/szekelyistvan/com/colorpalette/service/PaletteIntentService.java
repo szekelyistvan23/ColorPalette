@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
 
@@ -118,13 +119,17 @@ public class PaletteIntentService extends IntentService{
                 break;
         }
 
-        for (Palette palette:palettes) {
+        for (int i = 0; i < palettes.size(); i++) {
             new PaletteAsyncQueryHandler(getContentResolver())
-                    .startInsert(0,null, uri, paletteToContentValues(palette));
-        }
-
-        if (uri.equals(CONTENT_URI_NEW)){
-            resultReceiver.send(STATUS_FINISHED, Bundle.EMPTY);
+                    .startInsert(0,null, uri, paletteToContentValues(palettes.get(i)));
+            if (uri.equals(CONTENT_URI_NEW) && i == palettes.size()-1){
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        resultReceiver.send(STATUS_FINISHED, Bundle.EMPTY);
+                    }
+                },10000);
+            }
         }
     }
 }
