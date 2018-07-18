@@ -25,10 +25,13 @@ import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.APP_HAS_RUN_BEFORE;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.BASE_URL;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.NEW;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TOP;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.paletteToContentValues;
+import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.SERVICE_DOWNLOAD_FINISHED;
+import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
 
 /**
  * Based on: http://stacktips.com/tutorials/android/creating-a-background-service-in-android
@@ -119,14 +122,17 @@ public class PaletteIntentService extends IntentService{
                 break;
         }
 
+        PaletteAsyncQueryHandler asyncQueryHandler = new PaletteAsyncQueryHandler(getContentResolver());
         for (int i = 0; i < palettes.size(); i++) {
-            new PaletteAsyncQueryHandler(getContentResolver())
-                    .startInsert(0,null, uri, paletteToContentValues(palettes.get(i)));
+            asyncQueryHandler.startInsert(0,null, uri, paletteToContentValues(palettes.get(i)));
             if (uri.equals(CONTENT_URI_NEW) && i == palettes.size()-1){
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         resultReceiver.send(STATUS_FINISHED, Bundle.EMPTY);
+//                        setAppRunBefore(PaletteIntentService.this,true);
+                        writeBoolean(PaletteIntentService.this, APP_HAS_RUN_BEFORE, true);
+                        writeBoolean(PaletteIntentService.this, SERVICE_DOWNLOAD_FINISHED, true);
                     }
                 },10000);
             }

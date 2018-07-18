@@ -14,9 +14,7 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -59,7 +57,7 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.dialogs.DeleteDialog;
 import szekelyistvan.com.colorpalette.dialogs.ExitAppDialog;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.provider.FavoriteLoader;
+import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
 import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
@@ -75,6 +73,9 @@ import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_STARTED;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.cursorToArrayList;
 import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
+import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.SERVICE_DOWNLOAD_FINISHED;
+import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.readBoolean;
+import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
 
 public class MainActivity extends AppCompatActivity implements PaletteResultReceiver.Receiver,
         DeleteDialog.DeleteDialogListener, LoaderManager.LoaderCallbacks<Cursor>{
@@ -149,18 +150,26 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         setUpBottomNavigation();
 
         if (savedInstanceState == null) {
-            if (appHasRunBefore(this)) {
+            if (readBoolean(this, APP_HAS_RUN_BEFORE, false)) {
                 if (!selectList()) {
                     bottomNavigationView.setSelectedItemId(R.id.palette_top);
                 }
             } else {
                 startService();
-                appRunBefore(this,true);
+//                setAppRunBefore(this,true);
             }
         } else {
-            restoreListsState(savedInstanceState);
-            paletteAdapter.changePaletteData(palettes);
-            restoreListState();
+            if (!readBoolean(this, SERVICE_DOWNLOAD_FINISHED, false)){
+                PaletteAsyncQueryHandler asyncHandler =
+                        new PaletteAsyncQueryHandler(getContentResolver());
+                asyncHandler.startDelete(0, null, CONTENT_URI_TOP, null, null);
+                asyncHandler.startDelete(0, null, CONTENT_URI_NEW, null, null);
+                startService();
+            } else {
+                restoreListsState(savedInstanceState);
+                paletteAdapter.changePaletteData(palettes);
+                restoreListState();
+            }
         }
     }
 
@@ -357,18 +366,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         startService(intent);
     }
 
-    public static boolean appHasRunBefore(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(DEFAULT_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(APP_HAS_RUN_BEFORE, false);
-    }
-
-    public static void appRunBefore(Context context, boolean runBefore){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(DEFAULT_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(APP_HAS_RUN_BEFORE, runBefore);
-        editor.apply();
-    }
-
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -454,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
                 break;
             case STATUS_ERROR:
                 progressBar.setVisibility(View.GONE);
-                appRunBefore(this, false);
+                writeBoolean(this, APP_HAS_RUN_BEFORE, false);
                 Snackbar.make(mainLayout, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
