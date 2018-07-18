@@ -240,6 +240,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
+    public void showHeart(){
+        if (favoriteImage != null) {
+            favoriteImage.setVisibility(View.VISIBLE);
+        }
+    }
+
     private String extractPaletteName (Cursor cursor){
         String result="";
         while (cursor.moveToNext()){

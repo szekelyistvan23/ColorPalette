@@ -59,6 +59,7 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.dialogs.DeleteDialog;
 import szekelyistvan.com.colorpalette.dialogs.ExitAppDialog;
 import szekelyistvan.com.colorpalette.model.Palette;
+import szekelyistvan.com.colorpalette.provider.FavoriteLoader;
 import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
 import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public static final String ADAPTER_DATA = "adapter_data";
     public static final String EXIT_APP_DIALOG = "exit_app_dialog";
     public static final String DELETE_DIALOG = "delete_dialog";
+    public static final String FAVORITE_ARRAY = "favorite_array";
     public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
     public static final String ANOTHER_FORMAT_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
     public static final int MAIN_LOADER_ID = 11;
@@ -166,29 +168,35 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.palette_top:
-                        saveListState();
-                        getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), MainActivity.this);
-                        isTopButtonClicked = true; isNewButtonClicked = false; isFavoriteButtonClicked = false;
-                        break;
-                    case R.id.palette_new:
-                        saveListState();
-                        getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_NEW,null,null), MainActivity.this);
-                        isTopButtonClicked = false; isNewButtonClicked = true; isFavoriteButtonClicked = false;
-                        break;
-                    case R.id.palette_favorite:
-                        saveListState();
-                        getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,null,null), MainActivity.this);
-                        if (isTopButtonClicked){
-                            lastButtonClicked = TOP;
-                        }
-                        if (isNewButtonClicked){
-                            lastButtonClicked = NEW;
-                        }
-                        isTopButtonClicked = false; isNewButtonClicked = false; isFavoriteButtonClicked = true;
-                        break;
-                }
+                    switch (item.getItemId()) {
+                        case R.id.palette_top:
+                            saveListState();
+                            getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_TOP, null, null), MainActivity.this);
+                            isTopButtonClicked = true;
+                            isNewButtonClicked = false;
+                            isFavoriteButtonClicked = false;
+                            break;
+                        case R.id.palette_new:
+                            saveListState();
+                            getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_NEW, null, null), MainActivity.this);
+                            isTopButtonClicked = false;
+                            isNewButtonClicked = true;
+                            isFavoriteButtonClicked = false;
+                            break;
+                        case R.id.palette_favorite:
+                            saveListState();
+                            getSupportLoaderManager().restartLoader(MAIN_LOADER_ID, makeBundle(CONTENT_URI_FAVORITE, null, null), MainActivity.this);
+                            if (isTopButtonClicked) {
+                                lastButtonClicked = TOP;
+                            }
+                            if (isNewButtonClicked) {
+                                lastButtonClicked = NEW;
+                            }
+                            isTopButtonClicked = false;
+                            isNewButtonClicked = false;
+                            isFavoriteButtonClicked = true;
+                            break;
+                    }
                 return true;
             }
         });

@@ -25,20 +25,24 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 
 import com.crashlytics.android.Crashlytics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
+import szekelyistvan.com.colorpalette.provider.FavoriteLoader;
 import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.utils.DepthPageTransformer;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.FAVORITE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.MAIN_LOADER_ID;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
@@ -50,8 +54,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     private int paletteIndex;
     private List<Palette> baseArray;
+    private ArrayList<String> favoriteArray;
     private DetailFragment detailFragment;
     public static final int DETAIL_LOADER_ID = 22;
+    public static final int DETAIL_FAVORITE_LOADER_ID = 44;
 
     PalettePagerAdapter palettePagerAdapter;
     ViewPager viewPager;
@@ -60,6 +66,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         Fabric.with(this, new Crashlytics());
+        queryFavoriteList();
 
         if (getIntent().hasExtra(PALETTE_INDEX)){
             paletteIndex = getIntent().getIntExtra(PALETTE_INDEX, 0);
@@ -78,6 +85,37 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 getSupportLoaderManager().restartLoader(DETAIL_LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), this);
             }
         }
+    }
+
+    private void queryFavoriteList(){
+        LoaderManager.LoaderCallbacks<Cursor> queryResult = new LoaderManager.LoaderCallbacks<Cursor>() {
+            @NonNull
+            @Override
+            public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+                return new FavoriteLoader(DetailActivity.this);
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+                favoriteArray = paletteToStringArray(cursorToArrayList(data));
+                Log.d("ColorPalette", "onLoadFinished: " + favoriteArray.toString());
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+            }
+        };
+        getSupportLoaderManager()
+                .restartLoader(DETAIL_FAVORITE_LOADER_ID, null, queryResult);
+
+    }
+
+    private ArrayList<String> paletteToStringArray(List<Palette> paletteList){
+        ArrayList<String> result = new ArrayList<>();
+        for (Palette palette:paletteList) {
+            result.add(palette.getTitle());
+        }
+        return result;
     }
 
     private void setUpViewPager(){
@@ -106,6 +144,13 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         });
 
         viewPager.setCurrentItem(paletteIndex, false);
+//        viewPager.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+                detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                detailFragment.showHeart();
+//            }
+//        }, 500);
     }
 
     public class PalettePagerAdapter extends FragmentStatePagerAdapter {
