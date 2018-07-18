@@ -144,13 +144,15 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         });
 
         viewPager.setCurrentItem(paletteIndex, false);
-//        viewPager.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-                detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-                detailFragment.showHeart();
-//            }
-//        }, 500);
+        viewPager.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (favoriteArray != null && favoriteArray.contains(baseArray.get(paletteIndex).getTitle())) {
+                    detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                    detailFragment.showHeart();
+                }
+            }
+        }, 50);
     }
 
     public class PalettePagerAdapter extends FragmentStatePagerAdapter {
