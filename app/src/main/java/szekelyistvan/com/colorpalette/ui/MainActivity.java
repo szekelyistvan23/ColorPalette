@@ -57,7 +57,6 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.dialogs.DeleteDialog;
 import szekelyistvan.com.colorpalette.dialogs.ExitAppDialog;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.service.PaletteIntentService;
 import szekelyistvan.com.colorpalette.service.PaletteResultReceiver;
@@ -98,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public static final String ADAPTER_DATA = "adapter_data";
     public static final String EXIT_APP_DIALOG = "exit_app_dialog";
     public static final String DELETE_DIALOG = "delete_dialog";
-    public static final String FAVORITE_ARRAY = "favorite_array";
     public static final String INTENT = "intent";
     public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
     public static final String ANOTHER_FORMAT_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
@@ -116,9 +114,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     @BindView(R.id.main_layout)
     CoordinatorLayout mainLayout;
     private PaletteAdapter paletteAdapter;
-    private LinearLayoutManager linearLayoutManager;
     private boolean isListDeleteInitialized;
-    private int deleteCounter;
     private Intent serviceIntent;
 
     @Retention(SOURCE)
@@ -166,10 +162,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             serviceIntent = savedInstanceState.getParcelable(INTENT);
             if (!readBoolean(this, SERVICE_DOWNLOAD_FINISHED, false)){
                 this.stopService(serviceIntent);
-                if  ( getContentResolver().delete(CONTENT_URI_TOP, null, null)> 0 ||
-                        getContentResolver().delete(CONTENT_URI_NEW, null, null) > 0){
+//                if  ( getContentResolver().delete(CONTENT_URI_TOP, null, null)> 0 ||
+//                        getContentResolver().delete(CONTENT_URI_NEW, null, null) > 0){
                     startService();
-                };
+//                }
             } else {
                 restoreListsState(savedInstanceState);
                 if (palettes != null) {
@@ -336,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     private void setupRecyclerView(){
         recyclerView.setHasFixedSize(true);
 
-        linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         // Based on: https://antonioleiva.com/recyclerview-listener/
         paletteAdapter = new PaletteAdapter(new ArrayList<Palette>(), new PaletteAdapter.OnItemClickListener() {

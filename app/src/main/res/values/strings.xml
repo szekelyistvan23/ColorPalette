@@ -15,9 +15,8 @@
     <string name="install_browser">Install Internet browser!</string>
     <string name="delete_list">Delete list</string>
     <string name="exit">Exit</string>
-    <string name="no_favorite">No favorite palettes!</string>
+    <string name="no_favorite">No saved palettes!</string>
     <string name="added_to_favorites_list">Added to favorites list</string>
-    <string name="error_message">Something went wrong!</string>
     <string name="exit_app">Do you want to exit from the app?</string>
     <string name="cancel_dialog" tools:ignore="ButtonCase">cancel</string>
     <string name="delete">Delete</string>

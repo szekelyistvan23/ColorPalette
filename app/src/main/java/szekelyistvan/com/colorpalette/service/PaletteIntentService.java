@@ -1,7 +1,6 @@
 package szekelyistvan.com.colorpalette.service;
 
 import android.app.IntentService;
-import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,7 +38,7 @@ import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
  * Based on: http://stacktips.com/tutorials/android/creating-a-background-service-in-android
  */
 
-public class PaletteIntentService extends IntentService{
+public class PaletteIntentService extends IntentService {
 
     public static final int STATUS_STARTED = 0;
     public static final int STATUS_FINISHED = 1;
@@ -57,7 +56,7 @@ public class PaletteIntentService extends IntentService{
 
         resultReceiver = intent.getParcelableExtra("receiver");
 
-        if (!isNetworkConnection(getApplicationContext())){
+        if (!isNetworkConnection(getApplicationContext())) {
             resultReceiver.send(STATUS_ERROR, Bundle.EMPTY);
         } else {
             resultReceiver.send(STATUS_STARTED, Bundle.EMPTY);
@@ -67,7 +66,7 @@ public class PaletteIntentService extends IntentService{
 
     }
 
-    private void downloadJsonData(final @MainActivity.InternetClient String client){
+    private void downloadJsonData(final @MainActivity.InternetClient String client) {
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -75,11 +74,11 @@ public class PaletteIntentService extends IntentService{
 
         Retrofit retrofit = builder.build();
 
-        TopInternetClient topInternetClient= retrofit.create(TopInternetClient.class);
-        NewInternetClient newInternetClient= retrofit.create(NewInternetClient.class);
+        TopInternetClient topInternetClient = retrofit.create(TopInternetClient.class);
+        NewInternetClient newInternetClient = retrofit.create(NewInternetClient.class);
         Call<List<Palette>> call = null;
 
-        switch(client){
+        switch (client) {
             case TOP:
                 call = topInternetClient.topPalettesData();
                 break;
@@ -103,19 +102,19 @@ public class PaletteIntentService extends IntentService{
         });
     }
 
-    private void checkArray(){
+    private void checkArray() {
         List<Palette> resultArray = new ArrayList<>();
-        for (Palette palette:palettes) {
-            if (palette.getColors().size() >= 4){
+        for (Palette palette : palettes) {
+            if (palette.getColors().size() >= 4) {
                 resultArray.add(palette);
             }
         }
         palettes = resultArray;
     }
 
-    private void arrayToContentProvider(@MainActivity.InternetClient String database){
+    private void arrayToContentProvider(@MainActivity.InternetClient String database) {
         Uri uri = null;
-        switch(database){
+        switch (database) {
             case TOP:
                 uri = CONTENT_URI_TOP;
                 break;
@@ -129,8 +128,11 @@ public class PaletteIntentService extends IntentService{
         for (int i = 0; i < palettes.size(); i++) {
             contentValues[i] = paletteToContentValues(palettes.get(i));
         }
-        asyncQueryHandler.startBulkInsert(0,null, uri, contentValues);
-        if (uri.equals(CONTENT_URI_NEW)){
+
+        if (getContentResolver().delete(uri, null, null) == 0) {
+            asyncQueryHandler.startBulkInsert(0, null, uri, contentValues);
+        }
+        if (uri.equals(CONTENT_URI_NEW)) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -138,7 +140,7 @@ public class PaletteIntentService extends IntentService{
                     writeBoolean(PaletteIntentService.this, APP_HAS_RUN_BEFORE, true);
                     writeBoolean(PaletteIntentService.this, SERVICE_DOWNLOAD_FINISHED, true);
                 }
-            },10000);
+            }, 10000);
         }
     }
 }

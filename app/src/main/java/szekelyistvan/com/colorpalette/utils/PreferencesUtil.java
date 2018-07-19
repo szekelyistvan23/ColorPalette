@@ -3,7 +3,6 @@ package szekelyistvan.com.colorpalette.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import static szekelyistvan.com.colorpalette.ui.MainActivity.APP_HAS_RUN_BEFORE;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.DEFAULT_SHARED_PREFERENCES;
 
 public class PreferencesUtil {

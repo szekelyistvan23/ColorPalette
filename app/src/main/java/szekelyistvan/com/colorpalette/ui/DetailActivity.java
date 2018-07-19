@@ -43,8 +43,6 @@ import szekelyistvan.com.colorpalette.utils.DepthPageTransformer;
 
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.removeDuplicates;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.FAVORITE_ARRAY;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.MAIN_LOADER_ID;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.cursorToArrayList;

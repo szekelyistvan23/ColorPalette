@@ -52,7 +52,6 @@ import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.MAIN_LOADER_ID;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
@@ -87,7 +86,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final String EMPTY_STRING = "";
     public static final String WHITE = "#FFFFFF";
     public static final int SMALLER_SIZE = 4;
-    public static final String NO_COLOR = "no_color";
     public static final String SELECTION = "PALETTE_NAME =?";
     public static final String INTENT_TYPE = "text/plain";
     public static final String SPACE_HASH = " #";

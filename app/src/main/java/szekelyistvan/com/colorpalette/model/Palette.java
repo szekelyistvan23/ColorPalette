@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Palette implements Parcelable {
     private int id;
     private String title;
@@ -30,132 +31,16 @@ public class Palette implements Parcelable {
         this.url = url;
     }
 
-    public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
         public String getTitle() {
             return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
-
-        public int getNumViews() {
-            return numViews;
-        }
-
-        public void setNumViews(int numViews) {
-            this.numViews = numViews;
-        }
-
-        public int getNumVotes() {
-            return numVotes;
-        }
-
-        public void setNumVotes(int numVotes) {
-            this.numVotes = numVotes;
-        }
-
-        public int getNumComments() {
-            return numComments;
-        }
-
-        public void setNumComments(int numComments) {
-            this.numComments = numComments;
-        }
-
-        public double getNumHearts() {
-            return numHearts;
-        }
-
-        public void setNumHearts(double numHearts) {
-            this.numHearts = numHearts;
-        }
-
-        public int getRank() {
-            return rank;
-        }
-
-        public void setRank(int rank) {
-            this.rank = rank;
-        }
-
-        public String getDateCreated() {
-            return dateCreated;
-        }
-
-        public void setDateCreated(String dateCreated) {
-            this.dateCreated = dateCreated;
         }
 
         public List<String> getColors() {
             return colors;
         }
 
-        public void setColors(List<String> colors) {
-            this.colors = colors;
-        }
-
-        public List<Double> getColorWidths() {
-            return colorWidths;
-        }
-
-        public void setColorWidths(List<Double> colorWidths) {
-            this.colorWidths = colorWidths;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
         public String getUrl() {
             return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public String getImageUrl() {
-            return imageUrl;
-        }
-
-        public void setImageUrl(String imageUrl) {
-            this.imageUrl = imageUrl;
-        }
-
-        public String getBadgeUrl() {
-            return badgeUrl;
-        }
-
-        public void setBadgeUrl(String badgeUrl) {
-            this.badgeUrl = badgeUrl;
-        }
-
-        public String getApiUrl() {
-            return apiUrl;
-        }
-
-        public void setApiUrl(String apiUrl) {
-            this.apiUrl = apiUrl;
         }
 
         @Override

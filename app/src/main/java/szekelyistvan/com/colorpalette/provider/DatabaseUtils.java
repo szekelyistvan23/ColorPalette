@@ -59,9 +59,9 @@ public class DatabaseUtils {
      */
 
     public static List<Palette> removeDuplicates(List<Palette> palettes){
-        Set<Palette> finalPalettes = new LinkedHashSet<>(palettes);
-        palettes.clear();
-        palettes.addAll(finalPalettes);
-        return palettes;
+        List<Palette> resultPalettes = new ArrayList<>();
+        Set<Palette> tempPalettes = new LinkedHashSet<>(palettes);
+        resultPalettes.addAll(tempPalettes);
+        return resultPalettes;
     }
 }
