@@ -79,7 +79,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
 
     @Override
     public int getItemCount() {
-        return paletteList.size();
+        return paletteList != null ? paletteList.size() : 0 ;
     }
 
     class PaletteViewHolder extends RecyclerView.ViewHolder{
