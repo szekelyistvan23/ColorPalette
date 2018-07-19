@@ -53,15 +53,4 @@ public class DatabaseUtils {
         }
         return resultArrayList;
     }
-
-    /**
-     * Based on: http://www.java67.com/2015/03/how-to-remove-duplicates-from-arraylist.html
-     */
-
-    public static List<Palette> removeDuplicates(List<Palette> palettes){
-        List<Palette> resultPalettes = new ArrayList<>();
-        Set<Palette> tempPalettes = new LinkedHashSet<>(palettes);
-        resultPalettes.addAll(tempPalettes);
-        return resultPalettes;
-    }
 }

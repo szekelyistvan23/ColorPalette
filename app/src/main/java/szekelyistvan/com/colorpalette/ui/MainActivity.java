@@ -65,7 +65,6 @@ import szekelyistvan.com.colorpalette.utils.PaletteAdapter;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
-import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.removeDuplicates;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             } else {
                 restoreListsState(savedInstanceState);
                 if (palettes != null) {
-                    paletteAdapter.changePaletteData(removeDuplicates(palettes));
+                    paletteAdapter.changePaletteData(palettes);
                 }
                 restoreListState();
             }
@@ -435,7 +434,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
 
         if (data.getCount() != 0){
             palettes = cursorToArrayList(data);
-            palettes = removeDuplicates(palettes);
             paletteAdapter.changePaletteData(palettes);
             restoreListState();
         } else {
