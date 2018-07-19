@@ -14,6 +14,7 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Handler;
@@ -75,7 +76,9 @@ import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.cursorToArra
 import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.SERVICE_DOWNLOAD_FINISHED;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.readBoolean;
+import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.readString;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
+import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeString;
 
 public class MainActivity extends AppCompatActivity implements PaletteResultReceiver.Receiver,
         DeleteDialog.DeleteDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -97,9 +100,13 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public static final String ADAPTER_DATA = "adapter_data";
     public static final String EXIT_APP_DIALOG = "exit_app_dialog";
     public static final String DELETE_DIALOG = "delete_dialog";
-    public static final String INTENT = "intent";
+    public static final String SERVICE_STATUS = "service_status";
     public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
     public static final String ANOTHER_FORMAT_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
+    public static final String SERVICE_STARTED = "started";
+    public static final String SERVICE_FINISHED = "finished";
+    public static final String SERVICE_ERROR = "error";
+    public static final String SERVICE_NEVER_RUN = "never_run";
     public static final int MAIN_LOADER_ID = 11;
 
     List<Palette> palettes;
@@ -115,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     CoordinatorLayout mainLayout;
     private PaletteAdapter paletteAdapter;
     private boolean isListDeleteInitialized;
-    private Intent serviceIntent;
 
     @Retention(SOURCE)
     @StringDef({ TOP, NEW})
@@ -145,6 +151,12 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             initializeMobileAd();
         }
 
+        if (readString(this).equals(SERVICE_STARTED)){
+            progressBar.setVisibility(View.VISIBLE);
+        } else if (readString(this).equals(SERVICE_STARTED)){
+            progressBar.setVisibility(View.GONE);
+        }
+
         setupRecyclerView();
 
         setUpBottomNavigation();
@@ -159,13 +171,8 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
                 startService();
             }
         } else {
-            serviceIntent = savedInstanceState.getParcelable(INTENT);
             if (!readBoolean(this, SERVICE_DOWNLOAD_FINISHED, false)){
-                this.stopService(serviceIntent);
-//                if  ( getContentResolver().delete(CONTENT_URI_TOP, null, null)> 0 ||
-//                        getContentResolver().delete(CONTENT_URI_NEW, null, null) > 0){
-                    startService();
-//                }
+                startService();
             } else {
                 restoreListsState(savedInstanceState);
                 if (palettes != null) {
@@ -273,8 +280,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         state.putBoolean(FAVORITE_BUTTON_CLICKED, isFavoriteButtonClicked);
         state.putString(LAST_BUTTON_CLICKED, lastButtonClicked);
         state.putParcelableArrayList(ADAPTER_DATA, (ArrayList<? extends Parcelable>) palettes);
-        state.putParcelable(INTENT, serviceIntent);
-
     }
 
     private void restoreListsState (Bundle state){
@@ -363,12 +368,15 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     }
 
     private void startService(){
-        PaletteResultReceiver resultReceiver = new PaletteResultReceiver(new Handler());
-        resultReceiver.setReceiver(this);
+        String serviceStatus = readString(this);
+        if (serviceStatus.equals(SERVICE_NEVER_RUN) || serviceStatus.equals(SERVICE_ERROR)) {
+            PaletteResultReceiver resultReceiver = new PaletteResultReceiver(new Handler());
+            resultReceiver.setReceiver(this);
 
-        serviceIntent = new Intent(Intent.ACTION_SYNC, null, this, PaletteIntentService.class);
-        serviceIntent.putExtra(RECEIVER, resultReceiver);
-        startService(serviceIntent);
+            Intent intent = new Intent(Intent.ACTION_SYNC, null, this, PaletteIntentService.class);
+            intent.putExtra(RECEIVER, resultReceiver);
+            startService(intent);
+        }
     }
 
     @Override
@@ -449,13 +457,16 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public void onReceiveResult(int resultCode) {
         switch (resultCode) {
             case STATUS_STARTED:
+                writeString(this, SERVICE_STARTED);
                 progressBar.setVisibility(View.VISIBLE);
                 break;
             case STATUS_FINISHED:
+                writeString(this, SERVICE_FINISHED);
                 progressBar.setVisibility(View.GONE);
                 bottomNavigationView.setSelectedItemId(R.id.palette_top);
                 break;
             case STATUS_ERROR:
+                writeString(this, SERVICE_ERROR);
                 progressBar.setVisibility(View.GONE);
                 writeBoolean(this, APP_HAS_RUN_BEFORE, false);
                 Snackbar.make(mainLayout, R.string.no_internet, Snackbar.LENGTH_SHORT).show();

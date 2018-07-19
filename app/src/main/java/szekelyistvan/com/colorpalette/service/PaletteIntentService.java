@@ -29,9 +29,14 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.ui.MainActivity.APP_HAS_RUN_BEFORE;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.BASE_URL;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.NEW;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.SERVICE_ERROR;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.SERVICE_FINISHED;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.SERVICE_NEVER_RUN;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.SERVICE_STARTED;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TOP;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.SERVICE_DOWNLOAD_FINISHED;
+import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.readString;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
 
 /**
@@ -129,9 +134,8 @@ public class PaletteIntentService extends IntentService {
             contentValues[i] = paletteToContentValues(palettes.get(i));
         }
 
-        if (getContentResolver().delete(uri, null, null) == 0) {
-            asyncQueryHandler.startBulkInsert(0, null, uri, contentValues);
-        }
+        asyncQueryHandler.startBulkInsert(0, null, uri, contentValues);
+
         if (uri.equals(CONTENT_URI_NEW)) {
             new Handler().postDelayed(new Runnable() {
                 @Override
