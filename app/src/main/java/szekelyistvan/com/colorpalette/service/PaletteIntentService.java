@@ -1,6 +1,8 @@
 package szekelyistvan.com.colorpalette.service;
 
 import android.app.IntentService;
+import android.content.ContentProvider;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -122,20 +124,21 @@ public class PaletteIntentService extends IntentService{
                 break;
         }
 
+        ContentValues[] contentValues = new ContentValues[palettes.size()];
         PaletteAsyncQueryHandler asyncQueryHandler = new PaletteAsyncQueryHandler(getContentResolver());
         for (int i = 0; i < palettes.size(); i++) {
-            asyncQueryHandler.startInsert(0,null, uri, paletteToContentValues(palettes.get(i)));
-            if (uri.equals(CONTENT_URI_NEW) && i == palettes.size()-1){
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        resultReceiver.send(STATUS_FINISHED, Bundle.EMPTY);
-//                        setAppRunBefore(PaletteIntentService.this,true);
-                        writeBoolean(PaletteIntentService.this, APP_HAS_RUN_BEFORE, true);
-                        writeBoolean(PaletteIntentService.this, SERVICE_DOWNLOAD_FINISHED, true);
-                    }
-                },10000);
-            }
+            contentValues[i] = paletteToContentValues(palettes.get(i));
+        }
+        asyncQueryHandler.startBulkInsert(0,null, uri, contentValues);
+        if (uri.equals(CONTENT_URI_NEW)){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    resultReceiver.send(STATUS_FINISHED, Bundle.EMPTY);
+                    writeBoolean(PaletteIntentService.this, APP_HAS_RUN_BEFORE, true);
+                    writeBoolean(PaletteIntentService.this, SERVICE_DOWNLOAD_FINISHED, true);
+                }
+            },10000);
         }
     }
 }
