@@ -3,6 +3,9 @@ package szekelyistvan.com.colorpalette.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
+
+import static szekelyistvan.com.colorpalette.ui.MainActivity.TAG;
 
 public class CheckInternet {
     /**
@@ -20,7 +23,7 @@ public class CheckInternet {
                 }
             }
         }catch (NullPointerException e){
-            e.printStackTrace();
+            Log.d(TAG, "isNetworkConnection: " + e);
         }
         return false;
     }

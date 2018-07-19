@@ -26,6 +26,7 @@ import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
 public class PaletteRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context;
     private Cursor cursor;
+    public static final String SET_BACKGROUND = "setBackgroundColor";
 
     public PaletteRemoteViewsFactory(Context context) {
         this.context = context;
@@ -33,7 +34,6 @@ public class PaletteRemoteViewsFactory implements RemoteViewsService.RemoteViews
 
     @Override
     public void onCreate() {
-
     }
 
     @Override
@@ -71,20 +71,20 @@ public class PaletteRemoteViewsFactory implements RemoteViewsService.RemoteViews
         }
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.palette_widget_list_item);
-        remoteViews.setInt(R.id.appwidget_text_one, "setBackgroundColor", Color.parseColor(HASH +
+        remoteViews.setInt(R.id.appwidget_text_one, SET_BACKGROUND, Color.parseColor(HASH +
                 cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_ONE))));
-        remoteViews.setInt(R.id.appwidget_text_two, "setBackgroundColor", Color.parseColor(HASH +
+        remoteViews.setInt(R.id.appwidget_text_two, SET_BACKGROUND, Color.parseColor(HASH +
                 cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_TWO))));
-        remoteViews.setInt(R.id.appwidget_text_three, "setBackgroundColor", Color.parseColor(HASH +
+        remoteViews.setInt(R.id.appwidget_text_three, SET_BACKGROUND, Color.parseColor(HASH +
                 cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_THREE))));
-        remoteViews.setInt(R.id.appwidget_text_four, "setBackgroundColor", Color.parseColor(HASH +
+        remoteViews.setInt(R.id.appwidget_text_four, SET_BACKGROUND, Color.parseColor(HASH +
                 cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_FOUR))));
 
         String color = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_COLOR_FIVE));
         if (color != null) {
-            remoteViews.setInt(R.id.appwidget_text_five, "setBackgroundColor", Color.parseColor(HASH + color));
+            remoteViews.setInt(R.id.appwidget_text_five, SET_BACKGROUND, Color.parseColor(HASH + color));
         } else {
-            remoteViews.setInt(R.id.appwidget_text_five, "setBackgroundColor", Color.WHITE);
+            remoteViews.setInt(R.id.appwidget_text_five, SET_BACKGROUND, Color.WHITE);
         }
 
         Intent fillInIntent = new Intent();

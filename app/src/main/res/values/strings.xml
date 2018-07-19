@@ -27,4 +27,5 @@
     <string name="link">Link</string>
     <string name="share">Share</string>
     <string name="exit_message">You are one click away to exit from the app</string>
+    <string name="widget_name">Color Palette widget</string>
 </resources>

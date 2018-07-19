@@ -4,9 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import szekelyistvan.com.colorpalette.model.Palette;
 

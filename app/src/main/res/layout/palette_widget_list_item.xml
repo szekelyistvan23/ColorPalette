@@ -9,30 +9,35 @@
         android:id="@+id/appwidget_text_one"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:contentDescription="@string/color_one"/>
 
     <TextView
         android:id="@+id/appwidget_text_two"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:contentDescription="@string/color_two"/>
 
     <TextView
         android:id="@+id/appwidget_text_three"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:contentDescription="@string/color_three"/>
 
     <TextView
         android:id="@+id/appwidget_text_four"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:contentDescription="@string/color_four"/>
 
     <TextView
         android:id="@+id/appwidget_text_five"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:contentDescription="@string/color_five"/>
 
 </LinearLayout>

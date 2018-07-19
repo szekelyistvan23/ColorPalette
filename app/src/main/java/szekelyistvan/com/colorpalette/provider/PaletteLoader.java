@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
+
+import static szekelyistvan.com.colorpalette.ui.MainActivity.TAG;
 
 public class PaletteLoader extends AsyncTaskLoader<Cursor>{
 
@@ -48,7 +51,7 @@ public class PaletteLoader extends AsyncTaskLoader<Cursor>{
                     null);
 
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            Log.d(TAG, "loadInBackground: " + e);
             return null;
         }
     }

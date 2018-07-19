@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
 import szekelyistvan.com.colorpalette.network.NewInternetClient;
 import szekelyistvan.com.colorpalette.network.TopInternetClient;
@@ -29,14 +31,10 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.ui.MainActivity.APP_HAS_RUN_BEFORE;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.BASE_URL;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.NEW;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.SERVICE_ERROR;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.SERVICE_FINISHED;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.SERVICE_NEVER_RUN;
-import static szekelyistvan.com.colorpalette.ui.MainActivity.SERVICE_STARTED;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.TAG;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TOP;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.SERVICE_DOWNLOAD_FINISHED;
-import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.readString;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
 
 /**
@@ -103,6 +101,7 @@ public class PaletteIntentService extends IntentService {
             @Override
             public void onFailure(Call<List<Palette>> call, Throwable t) {
                 resultReceiver.send(STATUS_ERROR, Bundle.EMPTY);
+                Log.d(TAG, "onFailure: " + getResources().getString(R.string.no_internet));
             }
         });
     }

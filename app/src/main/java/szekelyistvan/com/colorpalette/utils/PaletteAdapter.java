@@ -37,7 +37,6 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteV
     private List<Palette> paletteList;
     private OnItemClickListener paletteListener;
     public static final String HASH = "#";
-    public static final String TAG = "ColorPalette";
 
     public PaletteAdapter(List<Palette> paletteList, OnItemClickListener paletteListener) {
         this.paletteList = paletteList;

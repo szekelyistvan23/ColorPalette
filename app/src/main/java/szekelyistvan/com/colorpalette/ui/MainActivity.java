@@ -14,7 +14,6 @@ package szekelyistvan.com.colorpalette.ui;
         See the License for the specific language governing permissions and
         limitations under the License.*/
 
-import android.app.ActivityManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Handler;
@@ -150,17 +149,17 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             initializeMobileAd();
         }
 
-        if (readString(this).equals(SERVICE_STARTED)){
-            progressBar.setVisibility(View.VISIBLE);
-        } else if (readString(this).equals(SERVICE_STARTED)){
-            progressBar.setVisibility(View.GONE);
-        }
+        checkProgressBarStatus();
 
         setupRecyclerView();
 
-        setUpBottomNavigation();
+        setupBottomNavigation();
 
-        if (savedInstanceState == null) {
+        loadLists(savedInstanceState);
+    }
+
+    private void loadLists(Bundle bundle){
+        if (bundle == null) {
             if (readBoolean(this, APP_HAS_RUN_BEFORE, false) &&
                     readBoolean(this, SERVICE_DOWNLOAD_FINISHED, false)) {
                 if (!selectList()) {
@@ -173,16 +172,14 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             if (!readBoolean(this, SERVICE_DOWNLOAD_FINISHED, false)){
                 startService();
             } else {
-                restoreListsState(savedInstanceState);
-                if (palettes != null) {
-                    paletteAdapter.changePaletteData(palettes);
-                }
+                restoreListsState(bundle);
+                paletteAdapter.changePaletteData(palettes);
                 restoreListState();
             }
         }
     }
 
-    private void setUpBottomNavigation(){
+    private void setupBottomNavigation(){
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -290,6 +287,14 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         isFavoriteButtonClicked = state.getBoolean(FAVORITE_BUTTON_CLICKED);
         lastButtonClicked = state.getString(LAST_BUTTON_CLICKED);
         palettes = state.getParcelableArrayList(ADAPTER_DATA);
+    }
+
+    private void checkProgressBarStatus(){
+        if (readString(this).equals(SERVICE_STARTED)){
+            progressBar.setVisibility(View.VISIBLE);
+        } else if (readString(this).equals(SERVICE_STARTED)){
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void initializeMobileAd(){

@@ -26,7 +26,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +55,6 @@ import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
-import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -101,8 +99,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         unbinder = ButterKnife.bind(this, view);
-        final PaletteAsyncQueryHandler asyncHandler =
-                new PaletteAsyncQueryHandler(getActivity().getContentResolver());
 
         if (getArguments() != null) {
             palette = getArguments().getParcelable(PALETTE_INDEX);
@@ -113,46 +109,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         setBackgroundColor();
 
-        speedDialView.inflate(R.menu.speed_dial_menu);
-        speedDialView.setOnActionSelectedListener(new SpeedDialView.OnActionSelectedListener() {
-            @Override
-            public boolean onActionSelected(SpeedDialActionItem actionItem) {
-                switch (actionItem.getId()) {
-                    case R.id.fab_favorite:
-                        if (favoriteImage.getVisibility() == View.GONE) {
-                            favoriteImage.setVisibility(View.VISIBLE);
-                            asyncHandler.startInsert(0, null, CONTENT_URI_FAVORITE, paletteToContentValues(palette));
-                        } else {
-                            favoriteImage.setVisibility(View.GONE);
-                            String[] selectionArgs ={palette.getTitle()};
-                            asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, SELECTION, selectionArgs);
-                        }
-                        return false;
-                    case R.id.fab_share:
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, sharePalette());
-                        sendIntent.setType(INTENT_TYPE);
-                        startActivity(Intent.createChooser(sendIntent, getString(R.string.share_palette)));
-                        return false;
-                    case R.id.fab_link:
-                if (isNetworkConnection(getActivity())) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(palette.getUrl()));
-                        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                            startActivity(intent);
-                        } else {
-                            Snackbar.make(detailFragmentLayout, R.string.install_browser, Snackbar.LENGTH_SHORT).show();
-                        }
-                } else {
-                    Snackbar.make(detailFragmentLayout, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
-                }
-                        return false;
-                    default:
-                        return false;
-                }
-            }
-        });
+        setupFabMenu();
 
         getActivity()
                 .getSupportLoaderManager()
@@ -178,7 +135,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         if (query.equals(palette.getTitle())){
             favoriteImage.setVisibility(View.VISIBLE);
         }
-        Log.d(TAG, "onQueryComplete: " + query);
     }
 
     @Override
@@ -252,4 +208,49 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         return result;
     }
 
+    private void setupFabMenu(){
+        final PaletteAsyncQueryHandler asyncHandler =
+                new PaletteAsyncQueryHandler(getActivity().getContentResolver());
+
+        speedDialView.inflate(R.menu.speed_dial_menu);
+        speedDialView.setOnActionSelectedListener(new SpeedDialView.OnActionSelectedListener() {
+            @Override
+            public boolean onActionSelected(SpeedDialActionItem actionItem) {
+                switch (actionItem.getId()) {
+                    case R.id.fab_favorite:
+                        if (favoriteImage.getVisibility() == View.GONE) {
+                            favoriteImage.setVisibility(View.VISIBLE);
+                            asyncHandler.startInsert(0, null, CONTENT_URI_FAVORITE, paletteToContentValues(palette));
+                        } else {
+                            favoriteImage.setVisibility(View.GONE);
+                            String[] selectionArgs ={palette.getTitle()};
+                            asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, SELECTION, selectionArgs);
+                        }
+                        return false;
+                    case R.id.fab_share:
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, sharePalette());
+                        sendIntent.setType(INTENT_TYPE);
+                        startActivity(Intent.createChooser(sendIntent, getString(R.string.share_palette)));
+                        return false;
+                    case R.id.fab_link:
+                        if (isNetworkConnection(getActivity())) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(palette.getUrl()));
+                            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                startActivity(intent);
+                            } else {
+                                Snackbar.make(detailFragmentLayout, R.string.install_browser, Snackbar.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Snackbar.make(detailFragmentLayout, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
+                        }
+                        return false;
+                    default:
+                        return false;
+                }
+            }
+        });
+    }
 }
