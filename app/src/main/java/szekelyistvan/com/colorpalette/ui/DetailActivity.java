@@ -41,6 +41,7 @@ import szekelyistvan.com.colorpalette.provider.FavoriteLoader;
 import szekelyistvan.com.colorpalette.provider.PaletteLoader;
 import szekelyistvan.com.colorpalette.utils.DepthPageTransformer;
 
+import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.removeDuplicates;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.FAVORITE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.MAIN_LOADER_ID;
@@ -182,6 +183,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data !=null && data.getCount() > 0){
             baseArray = cursorToArrayList(data);
+            baseArray = removeDuplicates(baseArray);
             setTitle(baseArray.get(paletteIndex).getTitle());
             setUpViewPager();
         }

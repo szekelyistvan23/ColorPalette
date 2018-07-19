@@ -65,6 +65,7 @@ import szekelyistvan.com.colorpalette.utils.PaletteAdapter;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
+import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.removeDuplicates;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
@@ -78,7 +79,7 @@ import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.readBoolean;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
 
 public class MainActivity extends AppCompatActivity implements PaletteResultReceiver.Receiver,
-        DeleteDialog.DeleteDialogListener, LoaderManager.LoaderCallbacks<Cursor>{
+        DeleteDialog.DeleteDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String BASE_URL ="http://www.colourlovers.com/api/palettes/";
     public static final String PALETTE_INDEX = "palette_index";
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public static final String EXIT_APP_DIALOG = "exit_app_dialog";
     public static final String DELETE_DIALOG = "delete_dialog";
     public static final String FAVORITE_ARRAY = "favorite_array";
+    public static final String INTENT = "intent";
     public static final String AD_TEST_ID = "ca-app-pub-3940256099942544~3347511713";
     public static final String ANOTHER_FORMAT_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
     public static final int MAIN_LOADER_ID = 11;
@@ -116,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     private PaletteAdapter paletteAdapter;
     private LinearLayoutManager linearLayoutManager;
     private boolean isListDeleteInitialized;
+    private int deleteCounter;
+    private Intent serviceIntent;
 
     @Retention(SOURCE)
     @StringDef({ TOP, NEW})
@@ -150,24 +154,27 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         setUpBottomNavigation();
 
         if (savedInstanceState == null) {
-            if (readBoolean(this, APP_HAS_RUN_BEFORE, false)) {
+            if (readBoolean(this, APP_HAS_RUN_BEFORE, false) &&
+                    readBoolean(this, SERVICE_DOWNLOAD_FINISHED, false)) {
                 if (!selectList()) {
                     bottomNavigationView.setSelectedItemId(R.id.palette_top);
                 }
             } else {
                 startService();
-//                setAppRunBefore(this,true);
             }
         } else {
+            serviceIntent = savedInstanceState.getParcelable(INTENT);
             if (!readBoolean(this, SERVICE_DOWNLOAD_FINISHED, false)){
-                PaletteAsyncQueryHandler asyncHandler =
-                        new PaletteAsyncQueryHandler(getContentResolver());
-                asyncHandler.startDelete(0, null, CONTENT_URI_TOP, null, null);
-                asyncHandler.startDelete(0, null, CONTENT_URI_NEW, null, null);
-                startService();
+                this.stopService(serviceIntent);
+                if  ( getContentResolver().delete(CONTENT_URI_TOP, null, null)> 0 ||
+                        getContentResolver().delete(CONTENT_URI_NEW, null, null) > 0){
+                    startService();
+                };
             } else {
                 restoreListsState(savedInstanceState);
-                paletteAdapter.changePaletteData(palettes);
+                if (palettes != null) {
+                    paletteAdapter.changePaletteData(removeDuplicates(palettes));
+                }
                 restoreListState();
             }
         }
@@ -270,6 +277,8 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         state.putBoolean(FAVORITE_BUTTON_CLICKED, isFavoriteButtonClicked);
         state.putString(LAST_BUTTON_CLICKED, lastButtonClicked);
         state.putParcelableArrayList(ADAPTER_DATA, (ArrayList<? extends Parcelable>) palettes);
+        state.putParcelable(INTENT, serviceIntent);
+
     }
 
     private void restoreListsState (Bundle state){
@@ -361,9 +370,9 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         PaletteResultReceiver resultReceiver = new PaletteResultReceiver(new Handler());
         resultReceiver.setReceiver(this);
 
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, PaletteIntentService.class);
-        intent.putExtra(RECEIVER, resultReceiver);
-        startService(intent);
+        serviceIntent = new Intent(Intent.ACTION_SYNC, null, this, PaletteIntentService.class);
+        serviceIntent.putExtra(RECEIVER, resultReceiver);
+        startService(serviceIntent);
     }
 
     @Override
@@ -422,6 +431,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
 
         if (data.getCount() != 0){
             palettes = cursorToArrayList(data);
+            palettes = removeDuplicates(palettes);
             paletteAdapter.changePaletteData(palettes);
             restoreListState();
         } else {
