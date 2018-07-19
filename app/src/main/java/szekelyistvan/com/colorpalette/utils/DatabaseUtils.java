@@ -1,4 +1,4 @@
-package szekelyistvan.com.colorpalette.provider;
+package szekelyistvan.com.colorpalette.utils;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -17,9 +17,11 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
 
 public class DatabaseUtils {
+
     public static final String[] columns = {PALETTES_COLUMN_COLOR_ONE, PALETTES_COLUMN_COLOR_TWO,
             PALETTES_COLUMN_COLOR_THREE, PALETTES_COLUMN_COLOR_FOUR,
             PALETTES_COLUMN_COLOR_FIVE};
+
     public static ContentValues paletteToContentValues(Palette palette){
         int size = palette.getColors().size();
 

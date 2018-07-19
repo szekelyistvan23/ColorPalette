@@ -1,4 +1,4 @@
-package szekelyistvan.com.colorpalette.provider;
+package szekelyistvan.com.colorpalette.loaders;
 
 import android.content.Context;
 import android.database.Cursor;

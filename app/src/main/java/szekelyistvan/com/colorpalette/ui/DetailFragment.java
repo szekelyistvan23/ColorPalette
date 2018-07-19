@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.provider.PaletteLoader;
+import szekelyistvan.com.colorpalette.loaders.PaletteLoader;
 import szekelyistvan.com.colorpalette.utils.ContrastColor;
 import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 
@@ -52,8 +52,8 @@ import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConn
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
-import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.paletteToContentValues;
-import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
+import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.paletteToContentValues;
+import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
 
 /**

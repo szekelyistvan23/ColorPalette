@@ -12,7 +12,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/main_activity_toolbar"
                 android:layout_width="match_parent"
-                android:elevation="4dp"
+                android:elevation="@dimen/elevation"
                 android:layout_height="?android:attr/actionBarSize"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -24,7 +24,7 @@
         android:id="@+id/palette_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/widget_margin"
         android:scrollbars="vertical"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
@@ -32,7 +32,7 @@
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="@dimen/bottom_navigation_height"
         android:layout_gravity="bottom"
         android:background="@android:color/white"
         app:elevation="8dp"

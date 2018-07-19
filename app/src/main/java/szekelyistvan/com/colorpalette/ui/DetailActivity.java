@@ -37,15 +37,15 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.provider.FavoriteLoader;
-import szekelyistvan.com.colorpalette.provider.PaletteLoader;
+import szekelyistvan.com.colorpalette.loaders.FavoriteLoader;
+import szekelyistvan.com.colorpalette.loaders.PaletteLoader;
 import szekelyistvan.com.colorpalette.utils.DepthPageTransformer;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_TOP;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_ARRAY;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
-import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.cursorToArrayList;
-import static szekelyistvan.com.colorpalette.provider.LoaderUtil.makeBundle;
+import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
+import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.widget.PaletteWidget.POSITION_FROM_WIDGET;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{

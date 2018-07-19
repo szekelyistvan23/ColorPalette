@@ -31,9 +31,10 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.ui.MainActivity.APP_HAS_RUN_BEFORE;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.BASE_URL;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.NEW;
+import static szekelyistvan.com.colorpalette.ui.MainActivity.RECEIVER;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TAG;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TOP;
-import static szekelyistvan.com.colorpalette.provider.DatabaseUtils.paletteToContentValues;
+import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.paletteToContentValues;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.SERVICE_DOWNLOAD_FINISHED;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
 
@@ -57,7 +58,7 @@ public class PaletteIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-        resultReceiver = intent.getParcelableExtra("receiver");
+        resultReceiver = intent.getParcelableExtra(RECEIVER);
 
         if (!isNetworkConnection(getApplicationContext())) {
             resultReceiver.send(STATUS_ERROR, Bundle.EMPTY);
