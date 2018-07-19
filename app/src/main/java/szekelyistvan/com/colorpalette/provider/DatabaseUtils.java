@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import szekelyistvan.com.colorpalette.model.Palette;
 
@@ -50,5 +52,16 @@ public class DatabaseUtils {
             resultArrayList.add(new Palette(title, color, url));
         }
         return resultArrayList;
+    }
+
+    /**
+     * Based on: http://www.java67.com/2015/03/how-to-remove-duplicates-from-arraylist.html
+     */
+
+    public static List<Palette> removeDuplicates(List<Palette> palettes){
+        Set<Palette> finalPalettes = new LinkedHashSet<>(palettes);
+        palettes.clear();
+        palettes.addAll(finalPalettes);
+        return palettes;
     }
 }
