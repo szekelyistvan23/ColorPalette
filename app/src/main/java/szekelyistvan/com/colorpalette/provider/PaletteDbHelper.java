@@ -13,6 +13,10 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.TABLE_NAME_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.TABLE_NAME_TOP;
 
+/**
+ * Custom DBHelper class.
+ */
+
 public class PaletteDbHelper extends SQLiteOpenHelper {
 
     public PaletteDbHelper(Context context) {

@@ -11,6 +11,10 @@ import android.util.Log;
 
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TAG;
 
+/**
+ * Handles the data loading from the Content Provider for all the three lists of the app.
+ */
+
 public class PaletteLoader extends AsyncTaskLoader<Cursor>{
 
     private Bundle arguments;

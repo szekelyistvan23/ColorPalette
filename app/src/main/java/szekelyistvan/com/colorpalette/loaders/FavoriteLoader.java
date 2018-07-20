@@ -10,6 +10,10 @@ import android.util.Log;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TAG;
 
+/**
+ * Loads the favorite list's content.
+ */
+
 public class FavoriteLoader extends AsyncTaskLoader<Cursor> {
 
     public FavoriteLoader(@NonNull Context context) {

@@ -1,18 +1,20 @@
 package szekelyistvan.com.colorpalette.ui;
 
-/*Copyright 2018 Szekely Istvan
-
-        Licensed under the Apache License, Version 2.0 (the "License");
-        you may not use this file except in compliance with the License.
-        You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-        Unless required by applicable law or agreed to in writing, software
-        distributed under the License is distributed on an "AS IS" BASIS,
-        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-        See the License for the specific language governing permissions and
-        limitations under the License.*/
+/*
+ * Copyright (C) 2018 Szekely Istvan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -78,6 +80,10 @@ import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.readString;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeString;
 
+/**
+ * Displays a RecyclerView with three different adapter data.
+ */
+
 public class MainActivity extends AppCompatActivity implements PaletteResultReceiver.Receiver,
         DeleteDialog.DeleteDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -140,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Butterknife is distributed under Apache License, Version 2.0
         ButterKnife.bind(this);
         setSupportActionBar(mainActivityToolbar);
         Fabric.with(this, new Crashlytics());
@@ -158,13 +163,15 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         loadLists(savedInstanceState);
     }
 
+    /**
+     * Loads the data for the app, from the Internet or from the ContentProvider.
+     * @param bundle the argument is the savedInstanceChange, restores data after configuration change
+     */
     private void loadLists(Bundle bundle){
         if (bundle == null) {
             if (readBoolean(this, APP_HAS_RUN_BEFORE, false) &&
                     readBoolean(this, SERVICE_DOWNLOAD_FINISHED, false)) {
-                if (!selectList()) {
-                    bottomNavigationView.setSelectedItemId(R.id.palette_top);
-                }
+                bottomNavigationView.setSelectedItemId(R.id.palette_top);
             } else {
                 startService();
             }
@@ -179,6 +186,9 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         }
     }
 
+    /**
+     * Sets up the BottomNavigationView.
+     */
     private void setupBottomNavigation(){
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -217,21 +227,9 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         });
     }
 
-    private boolean selectList(){
-        if (isTopButtonClicked){
-            bottomNavigationView.setSelectedItemId(R.id.palette_top);
-            return true;
-        }
-        if (isNewButtonClicked){
-            bottomNavigationView.setSelectedItemId(R.id.palette_new);
-            return true;
-        }
-        if (isFavoriteButtonClicked){
-            bottomNavigationView.setSelectedItemId(R.id.palette_favorite);
-            return true;
-        }
-        return false;
-    }
+    /**
+     * Saves the state of the RecyclerView before configuration change.
+     */
     private void saveListState(){
         if (isTopButtonClicked){
             topState = recyclerView.getLayoutManager().onSaveInstanceState();
@@ -243,6 +241,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             favoriteState = recyclerView.getLayoutManager().onSaveInstanceState();
         }
     }
+
+    /**
+     * Restores the state of RecyclerView after configuration change.
+     */
     private void restoreListState(){
         if (isTopButtonClicked){
             if (topState != null) {
@@ -267,6 +269,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         }
     }
 
+    /**
+     * Saves some property values before configuration change.
+     * @param state the bundle where the values are saved
+     */
     private void saveListsState (Bundle state){
         state.putParcelable(TOP_STATE, topState);
         state.putParcelable(NEW_STATE, newState);
@@ -278,6 +284,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         state.putParcelableArrayList(ADAPTER_DATA, (ArrayList<? extends Parcelable>) palettes);
     }
 
+    /**
+     * Restores some property values after configuration change.
+     * @param state the bundle that holds the values
+     */
     private void restoreListsState (Bundle state){
         topState = state.getParcelable(TOP_STATE);
         newState = state.getParcelable(NEW_STATE);
@@ -289,14 +299,20 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         palettes = state.getParcelableArrayList(ADAPTER_DATA);
     }
 
+    /**
+     * At the first run of the app handles the ProgressBar when the service is running.
+     */
     private void checkProgressBarStatus(){
         if (readString(this).equals(SERVICE_STARTED)){
             progressBar.setVisibility(View.VISIBLE);
-        } else if (readString(this).equals(SERVICE_STARTED)){
+        } else if (readString(this).equals(SERVICE_FINISHED)){
             progressBar.setVisibility(View.GONE);
         }
     }
 
+    /**
+     * Initializes the interstitial mobile ad.
+     */
     private void initializeMobileAd(){
         MobileAds.initialize(this, AD_TEST_ID);
 
@@ -306,6 +322,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         interstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
+    /**
+     * Loads the mobile ad and starts the other activity.
+     * @param position the position of the selected RecyclerView item
+     */
     private void loadAd(final int position){
         interstitialAd.setAdListener(new AdListener(){
             @Override
@@ -323,6 +343,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             interstitialAd.show();
     }
 
+    /**
+     * Starts DetailActivity.
+     * @param position the position of the selected RecyclerView item
+     */
     private void startDetailActivity(int position){
         Bundle args = new Bundle();
         args.putInt(PALETTE_INDEX, position);
@@ -371,6 +395,9 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         recyclerView.setAdapter(paletteAdapter);
     }
 
+    /**
+     * Starts an IntentService to download data from the Internet.
+     */
     private void startService(){
         String serviceStatus = readString(this);
         if (serviceStatus.equals(SERVICE_NEVER_RUN) || serviceStatus.equals(SERVICE_ERROR)) {
@@ -383,6 +410,9 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         }
     }
 
+    /**
+     * After a back press reloads the favorite list.
+     */
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -391,6 +421,11 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         }
     }
 
+    /**
+     * Creates a custom options menu.
+     * @param menu  the custom menu
+     * @return true for the menu to be displayed, false it will not be shown
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -399,6 +434,11 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     *  Handles custom menu's item selection.
+     * @param item the menu item that was selected
+     * @return false to allow normal menu processing to proceed, true to consume it here
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -417,6 +457,12 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         }
     }
 
+    /**
+     * Queries the Content Provider of the app.
+     * @param id the id of the Loader
+     * @param args the Loader arguments
+     * @return returns a new PaletteLoader
+     */
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -456,6 +502,10 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
+    /**
+     * Receives the status of service.
+     * @param resultCode the codes according to the service state
+     */
     @Override
     public void onReceiveResult(int resultCode) {
         switch (resultCode) {
@@ -483,6 +533,9 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         }
     }
 
+    /**
+     * Alerts the user before exit from the app.
+     */
     @Override
     public void onBackPressed() {
         if (backPressCounter > 0) {
@@ -500,12 +553,19 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         }
     }
 
+    /**
+     * Saves the app's state before configuration change.
+     * @param outState the bundle that holds the data
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         saveListsState(outState);
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Loads the last list after favorite list delete, if the favorite list was visible.
+     */
     @Override
     public void onFavoriteListDelete() {
         if (isFavoriteButtonClicked) {

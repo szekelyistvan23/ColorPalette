@@ -20,6 +20,10 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.TABLE_NAME_NEW;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.TABLE_NAME_TOP;
 
+/**
+ * Content Provider for the three tables of the app.
+ */
+
 public class PaletteContentProvider extends ContentProvider {
 
 

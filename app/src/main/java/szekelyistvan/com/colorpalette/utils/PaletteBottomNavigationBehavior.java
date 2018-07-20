@@ -1,9 +1,5 @@
 package szekelyistvan.com.colorpalette.utils;
 
-/**
- * Based on: https://android.jlelse.eu/scroll-your-bottom-navigation-view-away-with-10-lines-of-code-346f1ed40e9e
- */
-
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,6 +11,11 @@ import android.view.View;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+
+/**
+ * Custom Bottom Navigation behaviour, that hides it on scroll and displays the SnackBar above it.
+ * Based on: https://android.jlelse.eu/scroll-your-bottom-navigation-view-away-with-10-lines-of-code-346f1ed40e9e
+ */
 
 class PaletteBottomNavigationBehavior <V extends View> extends CoordinatorLayout.Behavior<V> {
 

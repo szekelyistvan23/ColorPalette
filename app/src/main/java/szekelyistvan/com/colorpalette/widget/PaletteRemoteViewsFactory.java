@@ -20,6 +20,7 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
 
 /**
+ * This custom RemoteViewsFactory is necessary for a list to be displayed in a widget.
  * Based on: https://www.sitepoint.com/killer-way-to-show-a-list-of-items-in-android-collection-widget/
  */
 

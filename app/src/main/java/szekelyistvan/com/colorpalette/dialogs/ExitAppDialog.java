@@ -9,6 +9,9 @@ import android.support.v7.app.AlertDialog;
 
 import szekelyistvan.com.colorpalette.R;
 
+/**
+ * Exits the app.
+ */
 public class ExitAppDialog extends DialogFragment{
 
     @NonNull

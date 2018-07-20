@@ -1,18 +1,20 @@
 package szekelyistvan.com.colorpalette.ui;
 
-/*Copyright 2018 Szekely Istvan
-
-        Licensed under the Apache License, Version 2.0 (the "License");
-        you may not use this file except in compliance with the License.
-        You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-        Unless required by applicable law or agreed to in writing, software
-        distributed under the License is distributed on an "AS IS" BASIS,
-        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-        See the License for the specific language governing permissions and
-        limitations under the License.*/
+/*
+ * Copyright (C) 2018 Szekely Istvan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -47,6 +49,10 @@ import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
 import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.widget.PaletteWidget.POSITION_FROM_WIDGET;
+
+/**
+ * Displays a ViewPager with color palettes' details.
+ */
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -85,6 +91,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    /**
+     * Loads the favorite list with a Loader.
+     */
     private void queryFavoriteList(){
         LoaderManager.LoaderCallbacks<Cursor> queryResult = new LoaderManager.LoaderCallbacks<Cursor>() {
             @NonNull
@@ -108,6 +117,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     }
 
+    /**
+     * Transforms a Palette array in a String array, the elements are the palettes's titles.
+     * @param paletteList the Palette array
+     * @return the String array
+     */
     private ArrayList<String> paletteToStringArray(List<Palette> paletteList){
         ArrayList<String> result = new ArrayList<>();
         for (Palette palette:paletteList) {
@@ -116,6 +130,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         return result;
     }
 
+    /**
+     * Sets a ViewPager with FragmentStatePagerAdapter.
+     */
     private void setUpViewPager(){
         palettePagerAdapter = new PalettePagerAdapter(getSupportFragmentManager());
 
@@ -150,9 +167,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                     detailFragment.showHeart();
                 }
             }
-        }, 50);
+        }, 200);
     }
 
+    /**
+     * The adapter of the ViewPager.
+     */
     public class PalettePagerAdapter extends FragmentStatePagerAdapter {
 
         public PalettePagerAdapter(FragmentManager fm) {
@@ -170,6 +190,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    /**
+     * Queries the Content Provider of the app.
+     * @param id the id of the Loader
+     * @param args the Loader arguments
+     * @return returns a new PaletteLoader
+     */
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -189,6 +215,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
+    /**
+     * Overrides the home button behaviour.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -199,6 +228,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Closes the FAB menu if it is open.
+     */
     @Override
     public void onBackPressed() {
         detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());

@@ -8,6 +8,7 @@ import android.util.Log;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.TAG;
 
 public class CheckInternet {
+
     /**
      *  Checks the state of the network connection.
      */

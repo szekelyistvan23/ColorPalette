@@ -4,6 +4,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 
+/**
+ * A custom ResultReceiver that sends the service's state to MainActivity.
+ * Based on: Based on: http://stacktips.com/tutorials/android/creating-a-background-service-in-android
+ */
+
 public class PaletteResultReceiver extends ResultReceiver{
     private Receiver receiver;
 

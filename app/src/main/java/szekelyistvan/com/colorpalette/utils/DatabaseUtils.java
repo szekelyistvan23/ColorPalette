@@ -22,6 +22,12 @@ public class DatabaseUtils {
             PALETTES_COLUMN_COLOR_THREE, PALETTES_COLUMN_COLOR_FOUR,
             PALETTES_COLUMN_COLOR_FIVE};
 
+    /**
+     * Makes a ContentValues object, in this way the specified palette object can be inserted in
+     * a database.
+     * @param palette the object with the needed data
+     * @return the ContentValues object
+     */
     public static ContentValues paletteToContentValues(Palette palette){
         int size = palette.getColors().size();
 
@@ -35,6 +41,11 @@ public class DatabaseUtils {
         return contentValues;
     }
 
+    /**
+     * Extracts data from a Cursor and transforms it into an array.
+     * @param cursor the data holder
+     * @return the returned Palette array
+     */
     public static List<Palette> cursorToArrayList (Cursor cursor){
         List<Palette> resultArrayList = new ArrayList<>();
         List<String> color;

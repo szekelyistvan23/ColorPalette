@@ -13,6 +13,11 @@ import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
 
+/**
+ * Deletes the favorite list, if the delete list option was selected a method is triggered in the
+ * Activity.
+ */
+
 public class DeleteDialog extends DialogFragment{
 
     private  DeleteDialogListener listener;

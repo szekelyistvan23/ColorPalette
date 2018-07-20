@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Color Palette</string>
     <string name="color_one">Color one</string>
     <string name="color_two">Color two</string>
@@ -18,7 +18,7 @@
     <string name="no_favorite">No saved palettes!</string>
     <string name="added_to_favorites_list">Added to favorites list</string>
     <string name="exit_app">Do you want to exit from the app?</string>
-    <string name="cancel_dialog" tools:ignore="ButtonCase">cancel</string>
+    <string name="cancel_dialog">Cancel</string>
     <string name="delete">Delete</string>
     <string name="implement_dialog">must implement DeleteDialogListener!</string>
     <string name="top">Top</string>

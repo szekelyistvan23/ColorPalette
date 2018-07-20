@@ -6,6 +6,11 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Stores the color palette's data. Not every property is used, but they are declared to ease the json
+ * deserialization.
+ */
+
 @SuppressWarnings("unused")
 public class Palette implements Parcelable {
     private int id;

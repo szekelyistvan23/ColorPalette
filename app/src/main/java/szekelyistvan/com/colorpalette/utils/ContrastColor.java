@@ -3,11 +3,12 @@ package szekelyistvan.com.colorpalette.utils;
 import android.graphics.Color;
 
 public class ContrastColor {
+
     /**
-     * Based on:
-     * https://stackoverflow.com/a/39031835
-     * @param colorIntValue
-     * @return
+     * Calculates the text color based on the background color.
+     * Based on: https://stackoverflow.com/a/39031835
+     * @param colorIntValue the background color
+     * @return black or white color
      */
     public static int getContrastColor(int colorIntValue) {
         int red = Color.red(colorIntValue);

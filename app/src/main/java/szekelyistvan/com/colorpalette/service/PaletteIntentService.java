@@ -39,6 +39,7 @@ import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.SERVICE_DOWNL
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.writeBoolean;
 
 /**
+ * The service that at the first successful run downloads data from the Internet.
  * Based on: http://stacktips.com/tutorials/android/creating-a-background-service-in-android
  */
 
@@ -70,6 +71,10 @@ public class PaletteIntentService extends IntentService {
 
     }
 
+    /**
+     * Downloads data from the Internet, deserialize it and saves it.
+     * @param client the database name
+     */
     private void downloadJsonData(final @MainActivity.InternetClient String client) {
 
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -107,6 +112,9 @@ public class PaletteIntentService extends IntentService {
         });
     }
 
+    /**
+     * Sorts the downloaded data by the number of colors from the array.
+     */
     private void checkArray() {
         List<Palette> resultArray = new ArrayList<>();
         for (Palette palette : palettes) {
@@ -117,6 +125,10 @@ public class PaletteIntentService extends IntentService {
         palettes = resultArray;
     }
 
+    /**
+     * Saves and array to a database.
+     * @param database the database name
+     */
     private void arrayToContentProvider(@MainActivity.InternetClient String database) {
         Uri uri = null;
         switch (database) {

@@ -3,6 +3,9 @@ package szekelyistvan.com.colorpalette.provider;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * The contract for the DBHelper class.
+ */
 public class PaletteContract {
 
     public static final String AUTHORITY = "szekelyistvan.com.colorpalette";

@@ -1,18 +1,20 @@
 package szekelyistvan.com.colorpalette.ui;
 
-/*Copyright 2018 Szekely Istvan
-
-        Licensed under the Apache License, Version 2.0 (the "License");
-        you may not use this file except in compliance with the License.
-        You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-        Unless required by applicable law or agreed to in writing, software
-        distributed under the License is distributed on an "AS IS" BASIS,
-        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-        See the License for the specific language governing permissions and
-        limitations under the License.*/
+/*
+ * Copyright (C) 2018 Szekely Istvan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -57,7 +59,7 @@ import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Contains details about the color palettes.
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -123,6 +125,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         unbinder.unbind();
     }
 
+    /**
+     * Queries the Content Provider of the app.
+     * @param id the id of the Loader
+     * @param args the Loader arguments
+     * @return returns a new PaletteLoader
+     */
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -141,6 +149,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
+    /**
+     * Creates a fragment from the given Palette object.
+     * @param palette the base data of the fragment
+     * @return the new fragment
+     */
     public static Fragment newInstance(Palette palette) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(PALETTE_INDEX, palette);
@@ -150,6 +163,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         return fragment;
     }
 
+    /**
+     * Builds a Share Intent extra text.
+     * @return the returned text
+     */
     private String sharePalette() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(palette.getTitle());
@@ -165,6 +182,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         return stringBuilder.toString();
     }
 
+    /**
+     * Customizes the displayed TextViews.
+     */
     private void setBackgroundColor() {
         int size = palette.getColors().size();
         List<TextView> textViews =
@@ -178,28 +198,49 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
+    /**
+     * Sets a TexView's text, text color and background color.
+     * @param textView the TextView that will be customized
+     * @param position the data is taken from an array, this is the index
+     */
     private void setTextViewProperties(TextView textView, int position) {
         textView.setBackgroundColor(Color.parseColor(HASH + palette.getColors().get(position)));
         textView.setTextColor(ContrastColor.getContrastColor(Color.parseColor(extractBackgroundColor(position))));
         textView.setText(extractBackgroundColor(position));
     }
 
+    /**
+     * Builds a color code, with a hash.
+     * @param position the data is taken from an array, this is the index
+     * @return returns the color code
+     */
     private String extractBackgroundColor(int position) {
         return HASH + palette.getColors().get(position);
     }
 
+    /**
+     * Closes the FAB menu if it is open.
+     */
     public void closeFab(){
         if (speedDialView.isOpen()){
             speedDialView.close(true);
         }
     }
 
+    /**
+     * Shows a heart if the palette is in the favorite list.
+     */
     public void showHeart(){
         if (favoriteImage != null) {
             favoriteImage.setVisibility(View.VISIBLE);
         }
     }
 
+    /**
+     * Gets the palette's name from a Cursor object.
+     * @param cursor the Cursor object
+     * @return the name
+     */
     private String extractPaletteName (Cursor cursor){
         String result="";
         while (cursor.moveToNext()){
@@ -208,6 +249,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         return result;
     }
 
+    /**
+     * Sets up a FAB menu.
+     */
     private void setupFabMenu(){
         final PaletteAsyncQueryHandler asyncHandler =
                 new PaletteAsyncQueryHandler(getActivity().getContentResolver());

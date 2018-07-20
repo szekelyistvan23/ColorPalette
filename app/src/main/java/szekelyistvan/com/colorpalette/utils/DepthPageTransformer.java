@@ -5,6 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 /**
+ * A custom animation for the ViewPager.
  * Taken from: https://developer.android.com/training/animation/screen-slide
  */
 

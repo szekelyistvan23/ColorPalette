@@ -12,7 +12,8 @@ import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.ui.DetailActivity;
 
 /**
- * Implementation of App Widget functionality.
+ * Implementation of App Widget functionality that displays a list of color palettes and on click
+ * opens the corresponding details.
  * Based on: https://www.sitepoint.com/killer-way-to-show-a-list-of-items-in-android-collection-widget/
  */
 public class PaletteWidget extends AppWidgetProvider {
