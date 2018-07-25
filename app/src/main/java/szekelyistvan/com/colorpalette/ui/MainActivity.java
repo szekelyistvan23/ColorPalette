@@ -409,12 +409,19 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         }
     }
 
+    /**
+     * Saves the state of the RecyclerView.
+     */
     @Override
     protected void onPause() {
         super.onPause();
         saveListState();
     }
 
+    /**
+     * Restores the state of the Recyclerview, after configuration change or
+     * when coming back from DetailActivity.
+     */
     @Override
     protected void onResume() {
         super.onResume();
