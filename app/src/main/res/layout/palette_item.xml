@@ -5,6 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/elevation"
+    android:layout_marginEnd="@dimen/elevation"
     android:layout_marginBottom="@dimen/elevation"
     android:foreground="?android:selectableItemBackground"
     app:cardCornerRadius="@dimen/elevation">
