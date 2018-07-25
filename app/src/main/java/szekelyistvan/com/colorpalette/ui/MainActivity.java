@@ -181,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             } else {
                 restoreListsState(bundle);
                 paletteAdapter.changePaletteData(palettes);
-                restoreListState();
             }
         }
     }
@@ -408,6 +407,18 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
             intent.putExtra(RECEIVER, resultReceiver);
             startService(intent);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveListState();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        restoreListState();
     }
 
     /**
