@@ -2,7 +2,7 @@
 
 ## Description
 
-The app displays two type of list with top and new palettes to choose from and you can save them in a favorite list. When the user clicks on one of the palettes, he will receive more detailed information about it.
+The app displays two types of a list with top and new palettes to choose from and you can save them in a favorite list. When the user clicks on one of the palettes, he will receive more detailed information about it.
 
 ## Intended User
 
