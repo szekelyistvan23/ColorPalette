@@ -11,8 +11,8 @@ The app helps mobile app developers and designers to choose a palette or a good 
 ## Features
 
 - Displays color palettes
-- Gives details about palettes, such as color’s hexa code, original web-page’s link
-- Shares palettes’ detail data trough sms, email, etc
+- Gives details about palettes, such as color’s hex code, original web-page’s link
+- Shares palettes’ detail data trough SMS, email, etc
 - Saves them to a favorite list
 - Displays a widget with color palettes
 
