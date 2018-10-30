@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -91,7 +92,8 @@ public class DetailFragment extends Fragment{
     public static final String SPACE_HASH = " #";
     public static final String COMMA = ",";
     public static final String COLON = ":";
-    public static final int FRAGMENT_LOADER_ID = 33;
+    public static final String FAVORITE_ARRAY = "favorite_array";
+    private ArrayList<String> favoriteArray;
 
     public DetailFragment() {
     }
@@ -104,6 +106,7 @@ public class DetailFragment extends Fragment{
 
         if (getArguments() != null) {
             palette = getArguments().getParcelable(PALETTE_INDEX);
+            favoriteArray = getArguments().getStringArrayList(FAVORITE_ARRAY);
         } else {
             getActivity().finish();
             Toast.makeText(getActivity(), R.string.no_data, Toast.LENGTH_SHORT).show();
@@ -112,6 +115,10 @@ public class DetailFragment extends Fragment{
         setBackgroundColor();
 
         setupFabMenu();
+
+        if (favoriteArray.contains(palette.getTitle())){
+            showHeart();
+        }
 
         return view;
     }
@@ -127,9 +134,10 @@ public class DetailFragment extends Fragment{
      * @param palette the base data of the fragment
      * @return the new fragment
      */
-    public static Fragment newInstance(Palette palette) {
+    public static Fragment newInstance(Palette palette, ArrayList<String> favorite) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(PALETTE_INDEX, palette);
+        bundle.putStringArrayList(FAVORITE_ARRAY, favorite);
         Fragment fragment = new DetailFragment();
         fragment.setArguments(bundle);
 
