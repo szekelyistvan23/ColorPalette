@@ -61,7 +61,7 @@ import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
 /**
  * Contains details about the color palettes.
  */
-public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class DetailFragment extends Fragment{
 
     private Palette palette;
 
@@ -113,9 +113,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         setupFabMenu();
 
-        getActivity()
-                .getSupportLoaderManager()
-                .restartLoader(FRAGMENT_LOADER_ID, makeBundle(CONTENT_URI_FAVORITE,SELECTION,palette.getTitle()), this);
         return view;
     }
 
@@ -123,30 +120,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    /**
-     * Queries the Content Provider of the app.
-     * @param id the id of the Loader
-     * @param args the Loader arguments
-     * @return returns a new PaletteLoader
-     */
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return new PaletteLoader(getActivity(), args);
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        String query = extractPaletteName(data);
-        if (query.equals(palette.getTitle())){
-            favoriteImage.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
     /**
