@@ -62,9 +62,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     private DetailFragment detailFragment;
     public static final int DETAIL_LOADER_ID = 22;
     public static final int DETAIL_FAVORITE_LOADER_ID = 44;
+    public static final String FAVORITE_ARRAY_SAVED = "favorite_array_saved";
+    public static final String CURRENT_POSITION = "current_position";
 
-    PalettePagerAdapter palettePagerAdapter;
-    ViewPager viewPager;
+    private PalettePagerAdapter palettePagerAdapter;
+    private ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,14 +82,19 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             baseArray = getIntent().getParcelableArrayListExtra(PALETTE_ARRAY);
         }
 
-        if (baseArray != null && baseArray.size() > 0){
-            setTitle(baseArray.get(paletteIndex).getTitle());
-            setUpViewPager();
-        } else {
-            if (getIntent().hasExtra(POSITION_FROM_WIDGET)) {
-                paletteIndex = getIntent().getIntExtra(POSITION_FROM_WIDGET, 0);
-                getSupportLoaderManager().restartLoader(DETAIL_LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), this);
+        if(savedInstanceState != null){
+            favoriteArray = savedInstanceState.getStringArrayList(FAVORITE_ARRAY_SAVED);
+            int savedPosition = savedInstanceState.getInt(CURRENT_POSITION);
+            if (savedPosition != 0){
+                paletteIndex = savedPosition;
             }
+        }
+
+        if (baseArray == null && getIntent().hasExtra(POSITION_FROM_WIDGET)) {
+            if (paletteIndex == 0){
+                paletteIndex = getIntent().getIntExtra(POSITION_FROM_WIDGET, 0);
+            }
+            getSupportLoaderManager().restartLoader(DETAIL_LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), this);
         }
     }
 
@@ -106,6 +113,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
                 favoriteArray = paletteToStringArray(cursorToArrayList(data));
                 Log.d("ColorPalette", "onLoadFinished: " + favoriteArray.toString());
+                if (baseArray != null && baseArray.size() > 0){
+                    setTitle(baseArray.get(paletteIndex).getTitle());
+                    setUpViewPager();
+                }
             }
 
             @Override
@@ -159,15 +170,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         });
 
         viewPager.setCurrentItem(paletteIndex, false);
-        viewPager.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (favoriteArray != null && favoriteArray.contains(baseArray.get(paletteIndex).getTitle())) {
-                    detailFragment = (DetailFragment) palettePagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
-                    detailFragment.showHeart();
-                }
-            }
-        }, 200);
     }
 
     /**
@@ -213,6 +215,16 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(FAVORITE_ARRAY_SAVED, favoriteArray);
+        int currentItem = viewPager.getCurrentItem();
+        if (currentItem != 0) {
+            outState.putInt(CURRENT_POSITION, currentItem);
+        }
     }
 
     /**
