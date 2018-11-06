@@ -17,17 +17,12 @@ package szekelyistvan.com.colorpalette.ui;
  */
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,16 +42,13 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import szekelyistvan.com.colorpalette.R;
 import szekelyistvan.com.colorpalette.model.Palette;
-import szekelyistvan.com.colorpalette.loaders.PaletteLoader;
 import szekelyistvan.com.colorpalette.utils.ContrastColor;
 import szekelyistvan.com.colorpalette.provider.PaletteAsyncQueryHandler;
 
 import static szekelyistvan.com.colorpalette.network.CheckInternet.isNetworkConnection;
 import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.CONTENT_URI_FAVORITE;
-import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEntry.PALETTES_COLUMN_PALETTE_NAME;
 import static szekelyistvan.com.colorpalette.ui.MainActivity.PALETTE_INDEX;
 import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.paletteToContentValues;
-import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.utils.PaletteAdapter.HASH;
 
 /**
@@ -116,7 +108,7 @@ public class DetailFragment extends Fragment{
 
         setupFabMenu();
 
-        if (favoriteArray.contains(palette.getTitle())){
+        if (favoriteArray !=null && favoriteArray.contains(palette.getTitle())){
             showHeart();
         }
 
@@ -218,19 +210,6 @@ public class DetailFragment extends Fragment{
     }
 
     /**
-     * Gets the palette's name from a Cursor object.
-     * @param cursor the Cursor object
-     * @return the name
-     */
-    private String extractPaletteName (Cursor cursor){
-        String result="";
-        while (cursor.moveToNext()){
-            result = cursor.getString(cursor.getColumnIndex(PALETTES_COLUMN_PALETTE_NAME));
-        }
-        return result;
-    }
-
-    /**
      * Sets up a FAB menu.
      */
     private void setupFabMenu(){
@@ -245,9 +224,11 @@ public class DetailFragment extends Fragment{
                     case R.id.fab_favorite:
                         if (favoriteImage.getVisibility() == View.GONE) {
                             favoriteImage.setVisibility(View.VISIBLE);
+                            favoriteArray.add(palette.getTitle());
                             asyncHandler.startInsert(0, null, CONTENT_URI_FAVORITE, paletteToContentValues(palette));
                         } else {
                             favoriteImage.setVisibility(View.GONE);
+                            favoriteArray.remove(palette.getTitle());
                             String[] selectionArgs ={palette.getTitle()};
                             asyncHandler.startDelete(0, null, CONTENT_URI_FAVORITE, SELECTION, selectionArgs);
                         }
