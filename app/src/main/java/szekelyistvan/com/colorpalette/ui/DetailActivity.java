@@ -263,10 +263,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     protected void onPause() {
-        int currentItem = viewPager.getCurrentItem();
-        if (currentItem >= 0) {
-            saveValue(this, CURRENT_POSITION, currentItem);
-            saveValue(this, ONPAUSE_CALLED, 1);
+        if (viewPager != null) {
+            int currentItem = viewPager.getCurrentItem();
+            if (currentItem >= 0) {
+                saveValue(this, CURRENT_POSITION, currentItem);
+                saveValue(this, ONPAUSE_CALLED, 1);
+            }
         }
         super.onPause();
     }
