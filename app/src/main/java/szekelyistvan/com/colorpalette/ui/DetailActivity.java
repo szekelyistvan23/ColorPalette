@@ -16,6 +16,8 @@ package szekelyistvan.com.colorpalette.ui;
  * limitations under the License.
  */
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -64,6 +66,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public static final int DETAIL_FAVORITE_LOADER_ID = 44;
     public static final String FAVORITE_ARRAY_SAVED = "favorite_array_saved";
     public static final String CURRENT_POSITION = "current_position";
+    public static final String ONPAUSE_CALLED = "onpause_called";
+    public static final String PALETTE_PREFERENCES="palette_preferences";
 
     private PalettePagerAdapter palettePagerAdapter;
     private ViewPager viewPager;
@@ -85,13 +89,14 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         if(savedInstanceState != null){
             favoriteArray = savedInstanceState.getStringArrayList(FAVORITE_ARRAY_SAVED);
             int savedPosition = savedInstanceState.getInt(CURRENT_POSITION);
-            if (savedPosition != 0){
+            if (savedPosition >= 0){
                 paletteIndex = savedPosition;
             }
         }
 
         if (baseArray == null && getIntent().hasExtra(POSITION_FROM_WIDGET)) {
             if (paletteIndex == 0){
+                saveValue(this, ONPAUSE_CALLED, 0);
                 paletteIndex = getIntent().getIntExtra(POSITION_FROM_WIDGET, 0);
             }
             getSupportLoaderManager().restartLoader(DETAIL_LOADER_ID, makeBundle(CONTENT_URI_TOP,null,null), this);
@@ -183,6 +188,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         @Override
         public Fragment getItem(int position) {
+            saveValue(DetailActivity.this, CURRENT_POSITION, position);
             return DetailFragment.newInstance(baseArray.get(position), favoriteArray);
         }
 
@@ -217,18 +223,76 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
+    /**
+     * Saves an int to shared preferences.
+     */
+    public static void saveValue(Context context, String key, int value) {
+        SharedPreferences sharedPreferences =
+                context.getSharedPreferences(PALETTE_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(key, value);
+            editor.apply();
+    }
+
+    /**
+     * Reads an int from shared preferences.
+     */
+    public int readValue(String key) {
+        SharedPreferences sharedPreferences =
+                this.getSharedPreferences(PALETTE_PREFERENCES, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(key, 0);
+    }
+
+    /**
+     * Deletes all the position related data from shared preferences.
+     */
+    public static void clearPosition(Context context){
+        saveValue(context, CURRENT_POSITION, 0);
+        saveValue(context, ONPAUSE_CALLED, 0);
+    }
+
+    @Override
+    protected void onResume() {
+        int savedPosition = readValue(CURRENT_POSITION);
+        int onPause = readValue(ONPAUSE_CALLED);
+        if (savedPosition >= 0 && onPause == 1){
+            paletteIndex = savedPosition;
+            clearPosition(this);
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        int currentItem = viewPager.getCurrentItem();
+        if (currentItem >= 0) {
+            saveValue(this, CURRENT_POSITION, currentItem);
+            saveValue(this, ONPAUSE_CALLED, 1);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        int onPause = readValue(ONPAUSE_CALLED);
+        if (onPause == 1) {
+            clearPosition(this);
+        }
+        super.onDestroy();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(FAVORITE_ARRAY_SAVED, favoriteArray);
         int currentItem = viewPager.getCurrentItem();
-        if (currentItem != 0) {
+        if (currentItem >= 0) {
             outState.putInt(CURRENT_POSITION, currentItem);
         }
     }
 
     /**
-     * Overrides the home button behaviour.
+     * Overrides the home button's behaviour.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

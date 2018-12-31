@@ -72,6 +72,7 @@ import static szekelyistvan.com.colorpalette.provider.PaletteContract.PaletteEnt
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_ERROR;
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_FINISHED;
 import static szekelyistvan.com.colorpalette.service.PaletteIntentService.STATUS_STARTED;
+import static szekelyistvan.com.colorpalette.ui.DetailActivity.clearPosition;
 import static szekelyistvan.com.colorpalette.utils.DatabaseUtils.cursorToArrayList;
 import static szekelyistvan.com.colorpalette.utils.LoaderUtil.makeBundle;
 import static szekelyistvan.com.colorpalette.utils.PreferencesUtil.SERVICE_DOWNLOAD_FINISHED;
@@ -149,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements PaletteResultRece
         ButterKnife.bind(this);
         setSupportActionBar(mainActivityToolbar);
         Fabric.with(this, new Crashlytics());
+        clearPosition(this);
 
         if (isNetworkConnection(this)){
             initializeMobileAd();
