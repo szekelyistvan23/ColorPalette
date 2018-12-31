@@ -188,7 +188,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         @Override
         public Fragment getItem(int position) {
-            saveValue(DetailActivity.this, CURRENT_POSITION, position);
             return DetailFragment.newInstance(baseArray.get(position), favoriteArray);
         }
 
